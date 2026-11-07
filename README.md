@@ -55,11 +55,9 @@ Pekerjaan dibagi per pasangan. Pembagian di dalam pasangan diatur sendiri oleh k
 
 | Pasangan | Anggota | Bagian | File yang dikerjakan |
 |----------|---------|--------|----------------------|
-| 1 | (nama dan NIM) | Fitur Admin: kelola menu, kelola akun kasir, riwayat dan laporan | service/MenuService.java, service/AkunService.java, service/LaporanService.java |
-| 2 | (nama dan NIM) | Fitur Kasir: pesanan, pembayaran, struk, riwayat kasir | service/PesananService.java, service/TransaksiService.java, payment/*, util/StrukPrinter.java |
-| 3 | (nama dan NIM) | Finalisasi: simpan ke file, perbaikan bug, Javadoc, PPT | service/FileManager.java dan seluruh kode |
-
-Nama dan NIM anggota akan dilengkapi.
+| 1 | Muhammad Albharaka Putrosandy (250810701100022)<br>Farras Arthada Siregar (250810701100111) | Fitur Admin: kelola menu, kelola akun kasir, riwayat dan laporan | service/MenuService.java, service/AkunService.java, service/LaporanService.java |
+| 2 | M. Dzaky Syraj (250810701100051)<br>Nabil Al Fijar (250810701100031) | Fitur Kasir: pesanan, pembayaran, struk, riwayat kasir | service/PesananService.java, service/TransaksiService.java, payment/*, util/StrukPrinter.java |
+| 3 | Mirdha Aulia Zahra (2408107010115)<br>Putroe Zalfa (250810701100024) | Finalisasi: simpan ke file, perbaikan bug, Javadoc, PPT | service/FileManager.java dan seluruh kode |
 
 ## Aturan Kerja Tim
 
