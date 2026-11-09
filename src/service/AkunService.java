@@ -89,3 +89,30 @@ while (berjalan) {
         DataStore.daftarAkun.put(username, kasirBaru);
         ConsoleHelper.cetak("Akun kasir berhasil ditambahkan.");
     }
+    
+    /** Menghapus akun Kasir berdasarkan username; akun Admin dilindungi. */
+    private void hapusKasir() {
+        ConsoleHelper.cetakJudul("HAPUS AKUN KASIR");
+
+        String username = ConsoleHelper.bacaTeks(
+                "Masukkan username kasir yang akan dihapus: "
+        );
+        if (username.isBlank()) {
+            ConsoleHelper.cetak("Username tidak boleh kosong.");
+            return;
+        }
+
+        Akun akun = DataStore.daftarAkun.get(username);
+        if (akun == null) {
+            ConsoleHelper.cetak("Akun dengan username tersebut tidak ditemukan.");
+            return;
+        }
+        if (!(akun instanceof Kasir)) {
+            ConsoleHelper.cetak("Akun Admin tidak boleh dihapus.");
+            return;
+        }
+
+        DataStore.daftarAkun.remove(username);
+        ConsoleHelper.cetak("Akun kasir berhasil dihapus.");
+    }
+}
