@@ -26,3 +26,13 @@ while (berjalan) {
             ConsoleHelper.cetak("0. Kembali");
 
             int pilihan = ConsoleHelper.bacaPilihan("Pilih: ", 0, 3);
+
+            switch (pilihan) {
+                case 1 -> tampilkanDaftarKasir();
+                case 2 -> tambahKasir();
+                case 3 -> hapusKasir();
+                case 0 -> berjalan = false;
+                default -> ConsoleHelper.cetak("Pilihan tidak dikenal.");
+            }
+        }
+    }
