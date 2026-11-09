@@ -18,3 +18,11 @@ public class AkunService {
     public void kelolaAkunKasir() {
         boolean berjalan = true;
 
+while (berjalan) {
+            ConsoleHelper.cetakJudul("KELOLA AKUN KASIR");
+            ConsoleHelper.cetak("1. Lihat Daftar Kasir");
+            ConsoleHelper.cetak("2. Tambah Kasir");
+            ConsoleHelper.cetak("3. Hapus Kasir");
+            ConsoleHelper.cetak("0. Kembali");
+
+            int pilihan = ConsoleHelper.bacaPilihan("Pilih: ", 0, 3);
