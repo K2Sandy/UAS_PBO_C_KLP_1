@@ -36,3 +36,20 @@ while (berjalan) {
             }
         }
     }
+    
+    /** Menampilkan semua akun yang bertipe Kasir. */
+    private void tampilkanDaftarKasir() {
+        ConsoleHelper.cetakJudul("DAFTAR AKUN KASIR");
+        boolean ditemukan = false;
+
+        for (Map.Entry<String, Akun> data : DataStore.daftarAkun.entrySet()) {
+            Akun akun = data.getValue();
+            if (akun instanceof Kasir) {
+                ConsoleHelper.cetak(
+                        "Username: " + akun.getUsername()
+                        + " | Nama: " + akun.getNamaLengkap()
+                        + " | Peran: " + akun.getPeran()
+                );
+                ditemukan = true;
+            }
+        }
