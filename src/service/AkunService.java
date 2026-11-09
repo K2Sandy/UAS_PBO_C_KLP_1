@@ -72,3 +72,20 @@ while (berjalan) {
             ConsoleHelper.cetak("Username sudah digunakan. Gunakan username lain.");
             return;
         }
+
+        String password = ConsoleHelper.bacaTeks("Masukkan password: ");
+        if (password.isBlank()) {
+            ConsoleHelper.cetak("Password tidak boleh kosong.");
+            return;
+        }
+
+        String namaLengkap = ConsoleHelper.bacaTeks("Masukkan nama lengkap: ");
+        if (namaLengkap.isBlank()) {
+            ConsoleHelper.cetak("Nama lengkap tidak boleh kosong.");
+            return;
+        }
+
+        Kasir kasirBaru = new Kasir(username, password, namaLengkap);
+        DataStore.daftarAkun.put(username, kasirBaru);
+        ConsoleHelper.cetak("Akun kasir berhasil ditambahkan.");
+    }
