@@ -53,3 +53,22 @@ while (berjalan) {
                 ditemukan = true;
             }
         }
+
+        if (!ditemukan) {
+            ConsoleHelper.cetak("Belum ada akun kasir.");
+        }
+    }
+
+    /** Menambahkan akun Kasir baru dengan username yang unik. */
+    private void tambahKasir() {
+        ConsoleHelper.cetakJudul("TAMBAH AKUN KASIR");
+
+        String username = ConsoleHelper.bacaTeks("Masukkan username: ");
+        if (username.isBlank()) {
+            ConsoleHelper.cetak("Username tidak boleh kosong.");
+            return;
+        }
+        if (DataStore.daftarAkun.containsKey(username)) {
+            ConsoleHelper.cetak("Username sudah digunakan. Gunakan username lain.");
+            return;
+        }
