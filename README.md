@@ -65,3 +65,12 @@ Pekerjaan dibagi per pasangan. Pembagian di dalam pasangan diatur sendiri oleh k
 - Nama class, nama method, dan parameter pada kerangka jangan diubah. Isi hanya bagian yang bertanda TODO.
 - Setiap pasangan bekerja di branch sendiri, lalu `git pull` sebelum `git push`.
 - Pesan commit memakai awalan: `feat:`, `fix:`, `docs:`, atau `refactor:`.
+
+## Lisensi
+
+Proyek ini dirilis di bawah [MIT License](LICENSE).
+
+
+
+
+
