@@ -1,47 +1,175 @@
+
 package service;
 
-/**
- * Layanan pengelolaan menu restoran. Dipakai oleh Admin (tambah, edit, hapus)
- * dan oleh Kasir (hanya melihat daftar menu).
- * Semua data menu ada di DataStore.daftarMenu.
- */
+import model.*;
+import util.*;
+import java.util.Scanner;
+
 public class MenuService {
 
+    private Scanner input = new Scanner(System.in);
+
     /**
-     * Menampilkan semua menu dalam bentuk tabel rapi:
-     * id, nama, kategori, harga, dan stok.
+     * Menampilkan semua menu restoran.
      */
     public void tampilkanSemuaMenu() {
-        // TODO: cetak isi DataStore.daftarMenu sebagai tabel.
-        //   Pakai ConsoleHelper.formatRupiah untuk harga.
-        //   Kalau daftar kosong, tampilkan "Belum ada menu."
+        if (DataStore.daftarMenu.isEmpty()) {
+            System.out.println("Belum ada menu.");
+            return;
+        }
+
+        System.out.println("\n========== DAFTAR MENU ==========");
+        System.out.printf("%-5s %-20s %-12s %-15s %-8s%n",
+                "ID", "Nama", "Kategori", "Harga", "Stok");
+
+        for (MenuItem menu : DataStore.daftarMenu) {
+            System.out.printf("%-5s %-20s %-12s %-15s %-8d%n",
+                    menu.getId(),
+                    menu.getNama(),
+                    menu.getKategori(),
+                    ConsoleHelper.formatRupiah(menu.getHarga()),
+                    menu.getStok());
+        }
     }
 
     /**
-     * Menambah menu baru. Method ini sendiri yang bertanya ke pengguna:
-     * jenis (makanan atau minuman), id, nama, harga, stok.
+     * Menambahkan menu makanan atau minuman.
      */
     public void tambahMenu() {
-        // TODO: tanya data lewat ConsoleHelper, buat objek
-        //   Makanan atau Minuman, lalu add ke DataStore.daftarMenu.
-        //   Id tidak boleh sama dengan menu lain
-        //   (lempar atau tangkap InputTidakValidException).
+        try {
+            System.out.println("\n===== TAMBAH MENU =====");
+            System.out.println("1. Makanan");
+            System.out.println("2. Minuman");
+            System.out.print("Pilih jenis menu: ");
+            int jenis = Integer.parseInt(input.nextLine());
+
+            System.out.print("Masukkan ID: ");
+            String id = input.nextLine();
+
+            for (MenuItem menu : DataStore.daftarMenu) {
+                if (menu.getId().equalsIgnoreCase(id)) {
+                    throw new InputTidakValidException("ID menu sudah digunakan!");
+                }
+            }
+
+            System.out.print("Masukkan nama: ");
+            String nama = input.nextLine();
+
+            System.out.print("Masukkan harga: ");
+            double harga = Double.parseDouble(input.nextLine());
+
+            System.out.print("Masukkan stok: ");
+            int stok = Integer.parseInt(input.nextLine());
+
+            if (harga <= 0 || stok < 0 || nama.trim().isEmpty()) {
+                throw new InputTidakValidException("Data menu tidak valid!");
+            }
+
+            MenuItem menu;
+
+            if (jenis == 1) {
+                menu = new Makanan(id, nama, harga, stok);
+            } else if (jenis == 2) {
+                menu = new Minuman(id, nama, harga, stok);
+            } else {
+                throw new InputTidakValidException("Pilihan jenis tidak valid!");
+            }
+
+            DataStore.daftarMenu.add(menu);
+            System.out.println("Menu berhasil ditambahkan!");
+
+        } catch (InputTidakValidException e) {
+            System.out.println("Gagal: " + e.getMessage());
+        } catch (NumberFormatException e) {
+            System.out.println("Harga, stok, atau pilihan harus berupa angka!");
+        }
     }
 
     /**
-     * Mengubah data menu yang sudah ada (nama, harga, atau stok).
+     * Mengubah data menu.
      */
     public void editMenu() {
-        // TODO: tampilkan menu, minta id yang mau diedit,
-        //   cari di DataStore.daftarMenu, lalu ubah lewat setter.
-        //   Kalau id tidak ditemukan, tampilkan pesan.
+        tampilkanSemuaMenu();
+
+        System.out.print("\nMasukkan ID menu yang ingin diedit: ");
+        String id = input.nextLine();
+
+        for (MenuItem menu : DataStore.daftarMenu) {
+            if (menu.getId().equalsIgnoreCase(id)) {
+                System.out.println("1. Ubah nama");
+                System.out.println("2. Ubah harga");
+                System.out.println("3. Ubah stok");
+                System.out.print("Pilih data yang ingin diubah: ");
+
+                try {
+                    int pilihan = Integer.parseInt(input.nextLine());
+
+                    switch (pilihan) {
+                        case 1:
+                            System.out.print("Nama baru: ");
+                            menu.setNama(input.nextLine());
+                            break;
+
+                        case 2:
+                            System.out.print("Harga baru: ");
+                            double harga = Double.parseDouble(input.nextLine());
+                            if (harga <= 0) {
+                                System.out.println("Harga harus lebih dari 0.");
+                                return;
+                            }
+                            menu.setHarga(harga);
+                            break;
+
+                        case 3:
+                            System.out.print("Stok baru: ");
+                            int stok = Integer.parseInt(input.nextLine());
+                            if (stok < 0) {
+                                System.out.println("Stok tidak boleh negatif.");
+                                return;
+                            }
+                            menu.setStok(stok);
+                            break;
+
+                        default:
+                            System.out.println("Pilihan tidak valid.");
+                            return;
+                    }
+
+                    System.out.println("Menu berhasil diperbarui!");
+                } catch (NumberFormatException e) {
+                    System.out.println("Input harus berupa angka!");
+                }
+                return;
+            }
+        }
+
+        System.out.println("Menu dengan ID tersebut tidak ditemukan.");
     }
 
     /**
-     * Menghapus menu berdasarkan id.
+     * Menghapus menu berdasarkan ID.
      */
     public void hapusMenu() {
-        // TODO: minta id menu, cari di DataStore.daftarMenu,
-        //   minta konfirmasi, lalu remove. Kalau tidak ketemu, tampilkan pesan.
+        tampilkanSemuaMenu();
+
+        System.out.print("\nMasukkan ID menu yang ingin dihapus: ");
+        String id = input.nextLine();
+
+        for (MenuItem menu : DataStore.daftarMenu) {
+            if (menu.getId().equalsIgnoreCase(id)) {
+                System.out.print("Yakin ingin menghapus menu ini? (y/n): ");
+                String konfirmasi = input.nextLine();
+
+                if (konfirmasi.equalsIgnoreCase("y")) {
+                    DataStore.daftarMenu.remove(menu);
+                    System.out.println("Menu berhasil dihapus!");
+                } else {
+                    System.out.println("Penghapusan dibatalkan.");
+                }
+                return;
+            }
+        }
+
+        System.out.println("Menu dengan ID tersebut tidak ditemukan.");
     }
 }
