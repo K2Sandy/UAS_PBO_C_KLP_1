@@ -1,6 +1,6 @@
 package payment;
 
-import java.util.Scanner;
+import util.ConsoleHelper;
 
 /**
  * Pembayaran lewat QRIS. Pada simulasi ini sistem hanya menampilkan
@@ -26,22 +26,20 @@ public class Qris implements Pembayaran {
      */
     @Override
     public boolean bayar(double total) {
-        System.out.println("\n=== PEMBAYARAN QRIS ===");
-        System.out.printf("Total yang harus dibayar: Rp%,.0f%n", total);
-        System.out.println("Instruksi:");
-        System.out.println("1. Tunjukkan kode QRIS restoran kepada pelanggan.");
-        System.out.println("2. Pelanggan scan memakai aplikasi e-wallet atau mobile banking.");
-        System.out.println("3. Pastikan nominal pembayaran sesuai total di atas.");
-        System.out.print("Pembayaran berhasil? (1 = ya, 0 = batal): ");
+        ConsoleHelper.cetakJudul("PEMBAYARAN QRIS");
+        ConsoleHelper.cetak("Total yang harus dibayar: " + ConsoleHelper.formatRupiah(total));
+        ConsoleHelper.cetak("Instruksi:");
+        ConsoleHelper.cetak("1. Tunjukkan kode QRIS restoran kepada pelanggan.");
+        ConsoleHelper.cetak("2. Pelanggan scan dengan e-wallet atau mobile banking.");
+        ConsoleHelper.cetak("3. Pastikan nominal sesuai total di atas.");
 
-        Scanner scanner = new Scanner(System.in);
-        String jawaban = scanner.nextLine().trim();
+        int jawaban = ConsoleHelper.bacaPilihan("Pembayaran berhasil? (1 = ya, 0 = batal): ", 0, 1);
 
-        if (jawaban.equals("1")) {
-            System.out.println("Pembayaran QRIS berhasil.");
+        if (jawaban == 1) {
+            ConsoleHelper.cetak("Pembayaran QRIS berhasil.");
             return true;
         }
-        System.out.println("Pembayaran QRIS dibatalkan.");
+        ConsoleHelper.cetak("Pembayaran QRIS dibatalkan.");
         return false;
     }
 }
