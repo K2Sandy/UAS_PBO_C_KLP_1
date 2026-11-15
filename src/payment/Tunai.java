@@ -24,22 +24,21 @@ public class Tunai implements Pembayaran {
      * @param total jumlah yang harus dibayar pelanggan
      * @return true jika uang yang diterima cukup, false jika tidak
      */
-    @Override
+        @Override
     public boolean bayar(double total) {
-        System.out.println("\n=== PEMBAYARAN TUNAI ===");
-        System.out.printf("Total yang harus dibayar: Rp%,.0f%n", total);
+        ConsoleHelper.cetakJudul("PEMBAYARAN TUNAI");
+        ConsoleHelper.cetak("Total yang harus dibayar: " + ConsoleHelper.formatRupiah(total));
 
         double uangDiterima = ConsoleHelper.bacaDesimal("Uang diterima: Rp");
 
         if (uangDiterima < total) {
-            double kurang = total - uangDiterima;
-            System.out.printf("Uang kurang Rp%,.0f. Pembayaran dibatalkan.%n", kurang);
+            ConsoleHelper.cetak("Uang kurang " + ConsoleHelper.formatRupiah(total - uangDiterima)
+                    + ". Pembayaran dibatalkan.");
             return false;
         }
 
-        double kembalian = uangDiterima - total;
-        System.out.printf("Kembalian: Rp%,.0f%n", kembalian);
-        System.out.println("Pembayaran tunai berhasil.");
+        ConsoleHelper.cetak("Kembalian: " + ConsoleHelper.formatRupiah(uangDiterima - total));
+        ConsoleHelper.cetak("Pembayaran tunai berhasil.");
         return true;
     }
 }
