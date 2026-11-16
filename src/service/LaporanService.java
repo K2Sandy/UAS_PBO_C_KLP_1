@@ -1,5 +1,10 @@
 package service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
+import model.Transaksi;
+
 /**
  * Layanan laporan untuk Admin: riwayat seluruh transaksi
  * dan laporan penjualan harian.
@@ -12,17 +17,14 @@ public class LaporanService {
      * id, waktu, kasir, metode pembayaran, dan total.
      */
     public void tampilkanSemuaRiwayat() {
-        // TODO: cetak isi DataStore.riwayat sebagai tabel.
-        //   Kalau kosong, tampilkan "Belum ada transaksi."
-    }
+        if (DataStore.riwayat.isEmpty()) {
+            System.out.println("Belum ada transaksi.");
+            return;
+        }
 
-    /**
-     * Menampilkan laporan penjualan untuk hari ini:
-     * jumlah transaksi dan total pendapatan.
-     */
-    public void laporanHarian() {
-        // TODO: pilih transaksi di DataStore.riwayat yang tanggalnya
-        //   hari ini (Transaksi.getWaktu().toLocalDate() dibandingkan
-        //   LocalDate.now()), lalu hitung jumlah dan total pendapatannya.
-    }
-}
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+
+        System.out.println("=== RIWAYAT SEMUA TRANSAKSI ===");
+        System.out.printf("%-8s %-17s %-12s %-10s %12s%n",
+                "ID", "Waktu", "Kasir", "Metode", "Total");
+        System.out.println("-------------------------------------------------------------");
