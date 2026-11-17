@@ -7,8 +7,11 @@ package model;
  */
 public abstract class Akun {
 
+    /** Nama pengguna untuk login (unik). */
     private String username;
+    /** Kata sandi untuk login. */
     private String password;
+    /** Nama lengkap pemilik akun. */
     private String namaLengkap;
 
     /**
@@ -37,32 +40,56 @@ public abstract class Akun {
      */
     public abstract String getPeran();
 
-    /** @return username untuk login */
+    /**
+     * Mengambil username untuk login.
+     *
+     * @return username untuk login
+     */
     public String getUsername() {
         return username;
     }
 
-    /** @param username username yang baru */
+    /**
+     * Mengubah username.
+     *
+     * @param username username yang baru
+     */
     public void setUsername(String username) {
         this.username = username;
     }
 
-    /** @return password akun */
+    /**
+     * Mengambil password akun.
+     *
+     * @return password akun
+     */
     public String getPassword() {
         return password;
     }
 
-    /** @param password password yang baru */
+    /**
+     * Mengubah password.
+     *
+     * @param password password yang baru
+     */
     public void setPassword(String password) {
         this.password = password;
     }
 
-    /** @return nama lengkap pemilik akun */
+    /**
+     * Mengambil nama lengkap pemilik akun.
+     *
+     * @return nama lengkap pemilik akun
+     */
     public String getNamaLengkap() {
         return namaLengkap;
     }
 
-    /** @param namaLengkap nama lengkap yang baru */
+    /**
+     * Mengubah nama lengkap.
+     *
+     * @param namaLengkap nama lengkap yang baru
+     */
     public void setNamaLengkap(String namaLengkap) {
         this.namaLengkap = namaLengkap;
     }

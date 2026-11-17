@@ -5,6 +5,7 @@ package model;
  */
 public class Makanan extends MenuItem {
 
+    /** True jika makanan ini pedas. */
     private boolean pedas;
 
     /**
@@ -42,12 +43,20 @@ public class Makanan extends MenuItem {
         return "Makanan";
     }
 
-    /** @return true jika makanan ini pedas */
+    /**
+     * Memeriksa apakah makanan ini pedas.
+     *
+     * @return true jika makanan ini pedas
+     */
     public boolean isPedas() {
         return pedas;
     }
 
-    /** @param pedas true jika makanan ini pedas */
+    /**
+     * Mengubah status pedas makanan ini.
+     *
+     * @param pedas true jika makanan ini pedas
+     */
     public void setPedas(boolean pedas) {
         this.pedas = pedas;
     }

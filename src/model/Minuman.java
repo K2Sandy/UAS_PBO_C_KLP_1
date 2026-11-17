@@ -6,8 +6,10 @@ package model;
  */
 public class Minuman extends MenuItem {
 
+    /** Tambahan harga per gelas untuk ukuran Large. */
     private static final double TAMBAHAN_LARGE = 2000;
 
+    /** Ukuran minuman: "Regular" atau "Large". */
     private String ukuran;
 
     /**
@@ -49,12 +51,20 @@ public class Minuman extends MenuItem {
         return "Minuman";
     }
 
-    /** @return ukuran minuman: "Regular" atau "Large" */
+    /**
+     * Mengambil ukuran minuman.
+     *
+     * @return ukuran minuman: "Regular" atau "Large"
+     */
     public String getUkuran() {
         return ukuran;
     }
 
-    /** @param ukuran ukuran baru: "Regular" atau "Large" */
+    /**
+     * Mengubah ukuran.
+     *
+     * @param ukuran ukuran baru: "Regular" atau "Large"
+     */
     public void setUkuran(String ukuran) {
         this.ukuran = ukuran;
     }

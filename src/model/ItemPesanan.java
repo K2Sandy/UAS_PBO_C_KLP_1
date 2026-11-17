@@ -5,7 +5,9 @@ package model;
  */
 public class ItemPesanan {
 
+    /** Menu yang dipesan. */
     private MenuItem menu;
+    /** Banyak porsi yang dipesan. */
     private int jumlah;
 
     /**
@@ -28,22 +30,38 @@ public class ItemPesanan {
         return menu.hitungHarga(jumlah);
     }
 
-    /** @return menu yang dipesan */
+    /**
+     * Mengambil menu yang dipesan.
+     *
+     * @return menu yang dipesan
+     */
     public MenuItem getMenu() {
         return menu;
     }
 
-    /** @param menu menu yang baru */
+    /**
+     * Mengubah menu.
+     *
+     * @param menu menu yang baru
+     */
     public void setMenu(MenuItem menu) {
         this.menu = menu;
     }
 
-    /** @return banyak porsi yang dipesan */
+    /**
+     * Mengambil banyak porsi yang dipesan.
+     *
+     * @return banyak porsi yang dipesan
+     */
     public int getJumlah() {
         return jumlah;
     }
 
-    /** @param jumlah banyak porsi yang baru */
+    /**
+     * Mengubah banyak porsi.
+     *
+     * @param jumlah banyak porsi yang baru
+     */
     public void setJumlah(int jumlah) {
         this.jumlah = jumlah;
     }

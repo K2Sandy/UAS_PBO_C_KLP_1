@@ -6,9 +6,13 @@ package model;
  */
 public abstract class MenuItem {
 
+    /** Kode unik menu, contoh: "M01". */
     private String id;
+    /** Nama menu. */
     private String nama;
+    /** Harga satuan dalam rupiah. */
     private double harga;
+    /** Jumlah stok yang tersedia. */
     private int stok;
 
     /**
@@ -42,42 +46,74 @@ public abstract class MenuItem {
      */
     public abstract String getKategori();
 
-    /** @return kode unik menu */
+    /**
+     * Mengambil kode unik menu.
+     *
+     * @return kode unik menu
+     */
     public String getId() {
         return id;
     }
 
-    /** @param id kode unik menu yang baru */
+    /**
+     * Mengubah kode unik menu.
+     *
+     * @param id kode unik menu yang baru
+     */
     public void setId(String id) {
         this.id = id;
     }
 
-    /** @return nama menu */
+    /**
+     * Mengambil nama menu.
+     *
+     * @return nama menu
+     */
     public String getNama() {
         return nama;
     }
 
-    /** @param nama nama menu yang baru */
+    /**
+     * Mengubah nama menu.
+     *
+     * @param nama nama menu yang baru
+     */
     public void setNama(String nama) {
         this.nama = nama;
     }
 
-    /** @return harga satuan dalam rupiah */
+    /**
+     * Mengambil harga satuan dalam rupiah.
+     *
+     * @return harga satuan dalam rupiah
+     */
     public double getHarga() {
         return harga;
     }
 
-    /** @param harga harga satuan yang baru */
+    /**
+     * Mengubah harga satuan.
+     *
+     * @param harga harga satuan yang baru
+     */
     public void setHarga(double harga) {
         this.harga = harga;
     }
 
-    /** @return jumlah stok saat ini */
+    /**
+     * Mengambil jumlah stok saat ini.
+     *
+     * @return jumlah stok saat ini
+     */
     public int getStok() {
         return stok;
     }
 
-    /** @param stok jumlah stok yang baru */
+    /**
+     * Mengubah jumlah stok.
+     *
+     * @param stok jumlah stok yang baru
+     */
     public void setStok(int stok) {
         this.stok = stok;
     }

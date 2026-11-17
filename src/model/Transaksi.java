@@ -8,13 +8,21 @@ import java.time.LocalDateTime;
  */
 public class Transaksi {
 
+    /** Kode unik transaksi, contoh: "T001". */
     private String idTransaksi;
+    /** Waktu transaksi dibuat. */
     private LocalDateTime waktu;
+    /** Pesanan yang dibayar. */
     private Pesanan pesanan;
+    /** Nama lengkap kasir yang memproses transaksi. */
     private String namaKasir;
+    /** Nama metode pembayaran. */
     private String metodePembayaran;
+    /** Total harga item sebelum pajak. */
     private double subtotal;
+    /** Besar pajak. */
     private double pajak;
+    /** Total yang dibayar (subtotal + pajak). */
     private double total;
 
     /**
@@ -25,82 +33,146 @@ public class Transaksi {
         this.waktu = LocalDateTime.now();
     }
 
-    /** @return kode unik transaksi */
+    /**
+     * Mengambil kode unik transaksi.
+     *
+     * @return kode unik transaksi
+     */
     public String getIdTransaksi() {
         return idTransaksi;
     }
 
-    /** @param idTransaksi kode unik transaksi yang baru */
+    /**
+     * Mengubah kode unik transaksi.
+     *
+     * @param idTransaksi kode unik transaksi yang baru
+     */
     public void setIdTransaksi(String idTransaksi) {
         this.idTransaksi = idTransaksi;
     }
 
-    /** @return waktu transaksi dibuat */
+    /**
+     * Mengambil waktu transaksi dibuat.
+     *
+     * @return waktu transaksi dibuat
+     */
     public LocalDateTime getWaktu() {
         return waktu;
     }
 
-    /** @param waktu waktu transaksi yang baru */
+    /**
+     * Mengubah waktu transaksi.
+     *
+     * @param waktu waktu transaksi yang baru
+     */
     public void setWaktu(LocalDateTime waktu) {
         this.waktu = waktu;
     }
 
-    /** @return pesanan yang dibayar */
+    /**
+     * Mengambil pesanan yang dibayar.
+     *
+     * @return pesanan yang dibayar
+     */
     public Pesanan getPesanan() {
         return pesanan;
     }
 
-    /** @param pesanan pesanan yang dibayar */
+    /**
+     * Mengubah pesanan yang dibayar.
+     *
+     * @param pesanan pesanan yang dibayar
+     */
     public void setPesanan(Pesanan pesanan) {
         this.pesanan = pesanan;
     }
 
-    /** @return nama kasir yang memproses transaksi */
+    /**
+     * Mengambil nama kasir yang memproses transaksi.
+     *
+     * @return nama kasir yang memproses transaksi
+     */
     public String getNamaKasir() {
         return namaKasir;
     }
 
-    /** @param namaKasir nama kasir yang memproses transaksi */
+    /**
+     * Mengubah nama kasir yang memproses transaksi.
+     *
+     * @param namaKasir nama kasir yang memproses transaksi
+     */
     public void setNamaKasir(String namaKasir) {
         this.namaKasir = namaKasir;
     }
 
-    /** @return nama metode pembayaran, contoh: "Tunai" */
+    /**
+     * Mengambil nama metode pembayaran.
+     *
+     * @return nama metode pembayaran, contoh: "Tunai"
+     */
     public String getMetodePembayaran() {
         return metodePembayaran;
     }
 
-    /** @param metodePembayaran nama metode pembayaran */
+    /**
+     * Mengubah nama metode pembayaran.
+     *
+     * @param metodePembayaran nama metode pembayaran
+     */
     public void setMetodePembayaran(String metodePembayaran) {
         this.metodePembayaran = metodePembayaran;
     }
 
-    /** @return subtotal sebelum pajak */
+    /**
+     * Mengambil subtotal sebelum pajak.
+     *
+     * @return subtotal sebelum pajak
+     */
     public double getSubtotal() {
         return subtotal;
     }
 
-    /** @param subtotal subtotal sebelum pajak */
+    /**
+     * Mengubah subtotal sebelum pajak.
+     *
+     * @param subtotal subtotal sebelum pajak
+     */
     public void setSubtotal(double subtotal) {
         this.subtotal = subtotal;
     }
 
-    /** @return jumlah pajak */
+    /**
+     * Mengambil jumlah pajak.
+     *
+     * @return jumlah pajak
+     */
     public double getPajak() {
         return pajak;
     }
 
-    /** @param pajak jumlah pajak */
+    /**
+     * Mengubah jumlah pajak.
+     *
+     * @param pajak jumlah pajak
+     */
     public void setPajak(double pajak) {
         this.pajak = pajak;
     }
 
-    /** @return total yang dibayar (subtotal + pajak) */
+    /**
+     * Mengambil total yang dibayar (subtotal + pajak).
+     *
+     * @return total yang dibayar (subtotal + pajak)
+     */
     public double getTotal() {
         return total;
     }
 
-    /** @param total total yang dibayar */
+    /**
+     * Mengubah total yang dibayar.
+     *
+     * @param total total yang dibayar
+     */
     public void setTotal(double total) {
         this.total = total;
     }

@@ -11,8 +11,11 @@ import util.ConsoleHelper;
  */
 public class Admin extends Akun {
 
+    /** Layanan kelola menu. */
     private final MenuService menuService = new MenuService();
+    /** Layanan kelola akun kasir. */
     private final AkunService akunService = new AkunService();
+    /** Layanan riwayat dan laporan penjualan. */
     private final LaporanService laporanService = new LaporanService();
 
     /**

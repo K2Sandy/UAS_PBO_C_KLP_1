@@ -11,8 +11,11 @@ import util.ConsoleHelper;
  */
 public class Kasir extends Akun {
 
+    /** Layanan untuk melihat daftar menu. */
     private final MenuService menuService = new MenuService();
+    /** Layanan pembuatan pesanan. */
     private final PesananService pesananService = new PesananService();
+    /** Layanan pembayaran dan riwayat transaksi. */
     private final TransaksiService transaksiService = new TransaksiService();
 
     /**

@@ -7,8 +7,11 @@ import java.util.ArrayList;
  */
 public class Pesanan {
 
+    /** Kode unik pesanan, contoh: "P001". */
     private String idPesanan;
+    /** Nomor meja pelanggan. */
     private int nomorMeja;
+    /** Daftar item yang dipesan. */
     private ArrayList<ItemPesanan> daftarItem;
 
     /**
@@ -45,32 +48,56 @@ public class Pesanan {
         return total;
     }
 
-    /** @return kode unik pesanan */
+    /**
+     * Mengambil kode unik pesanan.
+     *
+     * @return kode unik pesanan
+     */
     public String getIdPesanan() {
         return idPesanan;
     }
 
-    /** @param idPesanan kode unik pesanan yang baru */
+    /**
+     * Mengubah kode unik pesanan.
+     *
+     * @param idPesanan kode unik pesanan yang baru
+     */
     public void setIdPesanan(String idPesanan) {
         this.idPesanan = idPesanan;
     }
 
-    /** @return nomor meja pelanggan */
+    /**
+     * Mengambil nomor meja pelanggan.
+     *
+     * @return nomor meja pelanggan
+     */
     public int getNomorMeja() {
         return nomorMeja;
     }
 
-    /** @param nomorMeja nomor meja yang baru */
+    /**
+     * Mengubah nomor meja.
+     *
+     * @param nomorMeja nomor meja yang baru
+     */
     public void setNomorMeja(int nomorMeja) {
         this.nomorMeja = nomorMeja;
     }
 
-    /** @return daftar item dalam pesanan */
+    /**
+     * Mengambil daftar item dalam pesanan.
+     *
+     * @return daftar item dalam pesanan
+     */
     public ArrayList<ItemPesanan> getDaftarItem() {
         return daftarItem;
     }
 
-    /** @param daftarItem daftar item yang baru */
+    /**
+     * Mengubah daftar item.
+     *
+     * @param daftarItem daftar item yang baru
+     */
     public void setDaftarItem(ArrayList<ItemPesanan> daftarItem) {
         this.daftarItem = daftarItem;
     }
