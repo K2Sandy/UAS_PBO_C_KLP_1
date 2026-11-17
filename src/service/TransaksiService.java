@@ -46,6 +46,21 @@ public class TransaksiService {
         ConsoleHelper.cetak(String.format("%-20s %23s", "Subtotal", ConsoleHelper.formatRupiah(subtotal)));
         ConsoleHelper.cetak(String.format("%-20s %23s", "Pajak (10%)", ConsoleHelper.formatRupiah(pajak)));
         ConsoleHelper.cetak(String.format("%-20s %23s", "TOTAL", ConsoleHelper.formatRupiah(total)));
+
+        // Pilihan metode pembayaran (polymorphism lewat interface Pembayaran)
+        Pembayaran[] metode = { new Tunai(), new Qris(), new Debit() };
+
+        while (true) {
+            ConsoleHelper.cetak("");
+            ConsoleHelper.cetak("Pilih metode pembayaran:");
+            for (int i = 0; i < metode.length; i++) {
+                ConsoleHelper.cetak((i + 1) + ". " + metode[i].getNamaMetode());
+            }
+            ConsoleHelper.cetak("0. Batalkan pembayaran");
+            int pilihan = ConsoleHelper.bacaPilihan("Pilih: ", 0, metode.length);
+
+            Pembayaran dipilih = metode[pilihan - 1];
+        }
         //   3. Kalau pembayaran berhasil: buat objek Transaksi, isi dengan
         //      setter, add ke DataStore.riwayat, lalu StrukPrinter.cetak(transaksi).
         //   4. Kalau gagal: tampilkan pesan dan jangan simpan transaksi.
