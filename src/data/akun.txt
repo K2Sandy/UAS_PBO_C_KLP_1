@@ -1,0 +1,2 @@
+Kasir|kasir|kasir123|Kasir Satu
+Admin|admin|admin123|Admin Resto

@@ -61,6 +61,7 @@ public class MenuService {
             System.out.print("Masukkan stok: ");
             int stok = Integer.parseInt(input.nextLine());
 
+
             if (harga <= 0 || stok < 0 || nama.trim().isEmpty()) {
                 throw new InputTidakValidException("Data menu tidak valid!");
             }
@@ -68,9 +69,16 @@ public class MenuService {
             MenuItem menu;
 
             if (jenis == 1) {
-                menu = new Makanan(id, nama, harga, stok);
+                System.out.print("pedas atau tidak (ya/tidak): ");
+                String jawaban = input.nextLine();
+                boolean pedas = jawaban.equalsIgnoreCase("ya");
+
+                menu = new Makanan(id, nama, harga, stok, pedas);
             } else if (jenis == 2) {
-                menu = new Minuman(id, nama, harga, stok);
+                System.out.print("Masukkan ukuran (Regular/Large): ");
+                String ukuran = input.nextLine();
+
+                menu = new Minuman(id, nama, harga, stok, ukuran);
             } else {
                 throw new InputTidakValidException("Pilihan jenis tidak valid!");
             }
