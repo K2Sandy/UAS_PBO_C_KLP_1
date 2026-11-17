@@ -66,7 +66,7 @@ public class TransaksiService {
 
             Pembayaran dipilih = metode[pilihan - 1];
         
-        // 3. Pembayaran berhasil: buat transaksi, simpan, cetak struk
+            // 3. Pembayaran berhasil: buat transaksi, simpan, cetak struk
             if (dipilih.bayar(total)) {
                 Transaksi transaksi = new Transaksi();
                 transaksi.setIdTransaksi(String.format("T%03d", DataStore.riwayat.size() + 1));
@@ -99,10 +99,45 @@ public class TransaksiService {
      * @param kasir kasir yang riwayatnya ditampilkan
      */
     public void tampilkanRiwayatKasir(Kasir kasir) {
-        // TODO: dari DataStore.riwayat, pilih transaksi yang
-        //   getNamaKasir()-nya sama dengan kasir.getNamaLengkap(), lalu cetak
-        //   sebagai tabel. Kalau kosong, tampilkan "Belum ada transaksi."
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        boolean adaData = false;
+        double totalPendapatan = 0;
+
+        for (Transaksi t : DataStore.riwayat) {
+            if (!t.getNamaKasir().equals(kasir.getNamaLengkap())) {
+                continue;
+            }
+            if (!adaData) {
+                ConsoleHelper.cetakJudul("RIWAYAT TRANSAKSI - " + kasir.getNamaLengkap());
+                System.out.printf("%-8s %-17s %-6s %-10s %12s%n",
+                        "ID", "Waktu", "Meja", "Metode", "Total");
+                System.out.println("-".repeat(57));
+                adaData = true;
+            }
+            System.out.printf("%-8s %-17s %-6d %-10s %12s%n",
+                    t.getIdTransaksi(),
+                    t.getWaktu().format(format),
+                    t.getPesanan().getNomorMeja(),
+                    t.getMetodePembayaran(),
+                    ConsoleHelper.formatRupiah(t.getTotal()));
+            totalPendapatan += t.getTotal();
+        }
+
+        if (!adaData) {
+            ConsoleHelper.cetak("Belum ada transaksi.");
+            return;
+        }
+        System.out.println("-".repeat(57));
+        System.out.printf("%-43s %12s%n", "Total", ConsoleHelper.formatRupiah(totalPendapatan));
+
     }
+
+    /**
+     * Membatalkan pesanan yang tidak jadi dibayar dan mengembalikan stok
+     * menu yang sebelumnya sudah dikurangi saat pesanan dibuat.
+     *
+     * @param pesanan pesanan yang dibatalkan
+     */
     private void batalkanPesanan(Pesanan pesanan) {
         for (ItemPesanan item : pesanan.getDaftarItem()) {
             item.getMenu().setStok(item.getMenu().getStok() + item.getJumlah());
