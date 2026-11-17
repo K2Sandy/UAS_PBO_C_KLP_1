@@ -59,6 +59,11 @@ public class TransaksiService {
             ConsoleHelper.cetak("0. Batalkan pembayaran");
             int pilihan = ConsoleHelper.bacaPilihan("Pilih: ", 0, metode.length);
 
+            if (pilihan == 0) {
+                batalkanPesanan(pesanan);
+                return;
+            }
+
             Pembayaran dipilih = metode[pilihan - 1];
         
         // 3. Pembayaran berhasil: buat transaksi, simpan, cetak struk
@@ -76,8 +81,16 @@ public class TransaksiService {
                 StrukPrinter.cetak(transaksi);
                 return;
             }
+            // 4. Gagal: transaksi tidak disimpan, kasir boleh coba lagi atau batal
+            ConsoleHelper.cetak("Pembayaran belum berhasil. Transaksi tidak disimpan.");
+            int ulang = ConsoleHelper.bacaPilihan(
+                    "Coba metode lain? (1 = ya, 0 = batalkan pesanan): ", 0, 1);
+            if (ulang == 0) {
+                batalkanPesanan(pesanan);
+                return;
+            }
         }
-        //   4. Kalau gagal: tampilkan pesan dan jangan simpan transaksi.
+        
     }
 
     /**
@@ -89,5 +102,11 @@ public class TransaksiService {
         // TODO: dari DataStore.riwayat, pilih transaksi yang
         //   getNamaKasir()-nya sama dengan kasir.getNamaLengkap(), lalu cetak
         //   sebagai tabel. Kalau kosong, tampilkan "Belum ada transaksi."
+    }
+    private void batalkanPesanan(Pesanan pesanan) {
+        for (ItemPesanan item : pesanan.getDaftarItem()) {
+            item.getMenu().setStok(item.getMenu().getStok() + item.getJumlah());
+        }
+        ConsoleHelper.cetak("Pesanan dibatalkan. Stok menu dikembalikan.");
     }
 }
