@@ -171,29 +171,52 @@ public class AkunService {
         return false;
     }
 
-    /** Menghapus akun Kasir berdasarkan username; akun Admin dilindungi. */
-    private void hapusKasir() {
-        ConsoleHelper.cetakJudul("HAPUS AKUN KASIR");
-
-        String username = ConsoleHelper.bacaTeks(
-                "Masukkan username kasir yang akan dihapus: "
-        );
-        if (username.isBlank()) {
-            ConsoleHelper.cetak("Username tidak boleh kosong.");
-            return;
+    /**
+     * Mencari akun Kasir berdasarkan username yang diketik Admin
+     * (huruf besar/kecil dianggap sama).
+     *
+     * @param username username yang diketik
+     * @return akun Kasir, atau null jika tidak ada / bukan Kasir
+     *         (pesan penjelasan sudah ditampilkan)
+     */
+    private Kasir cariKasir(String username) {
+        Akun akun = DataStore.daftarAkun.get(username.toLowerCase());
+        if (akun == null) {
+            akun = DataStore.daftarAkun.get(username);
         }
-
-        Akun akun = DataStore.daftarAkun.get(username);
         if (akun == null) {
             ConsoleHelper.cetak("Akun dengan username tersebut tidak ditemukan.");
+            return null;
+        }
+        if (!(akun instanceof Kasir kasir)) {
+            ConsoleHelper.cetak("Akun Admin tidak bisa diubah atau dihapus dari menu ini.");
+            return null;
+        }
+        return kasir;
+    }
+
+    /**
+     * Menghapus akun Kasir setelah Admin mengonfirmasi. Akun Admin
+     * dilindungi. Riwayat transaksi kasir tersebut tetap tersimpan.
+     */
+    private void hapusKasir() {
+        tampilkanDaftarKasir();
+        String username = ConsoleHelper.bacaTeks("Username kasir yang akan dihapus (Enter = batal): ");
+        if (username.isEmpty()) {
             return;
         }
-        if (!(akun instanceof Kasir)) {
-            ConsoleHelper.cetak("Akun Admin tidak boleh dihapus.");
+        Kasir kasir = cariKasir(username);
+        if (kasir == null) {
             return;
         }
 
-        DataStore.daftarAkun.remove(username);
-        ConsoleHelper.cetak("Akun kasir berhasil dihapus.");
+        int yakin = ConsoleHelper.bacaPilihan("Hapus akun " + kasir.getUsername() + " ("
+                + kasir.getNamaLengkap() + ")? (1 = ya, 0 = tidak): ", 0, 1);
+        if (yakin == 0) {
+            ConsoleHelper.cetak("Penghapusan dibatalkan.");
+            return;
+        }
+        DataStore.daftarAkun.remove(kasir.getUsername());
+        ConsoleHelper.cetak("Akun kasir berhasil dihapus. Riwayat transaksinya tetap tersimpan.");
     }
 }
