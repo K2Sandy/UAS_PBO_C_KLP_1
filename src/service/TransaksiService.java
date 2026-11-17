@@ -28,11 +28,11 @@ public class TransaksiService {
      * @param kasir   kasir yang memproses pembayaran
      */
     public void prosesPembayaran(Pesanan pesanan, Kasir kasir) {
-        // TODO:
         // 1. Hitung subtotal, pajak, dan total
         double subtotal = pesanan.hitungSubtotal();
         double pajak = subtotal * TARIF_PAJAK;
         double total = subtotal + pajak;
+
         // 2. Tampilkan ringkasan pesanan
         ConsoleHelper.cetakJudul("RINGKASAN PESANAN " + pesanan.getIdPesanan()
                 + " (Meja " + pesanan.getNomorMeja() + ")");
@@ -81,6 +81,7 @@ public class TransaksiService {
                 StrukPrinter.cetak(transaksi);
                 return;
             }
+
             // 4. Gagal: transaksi tidak disimpan, kasir boleh coba lagi atau batal
             ConsoleHelper.cetak("Pembayaran belum berhasil. Transaksi tidak disimpan.");
             int ulang = ConsoleHelper.bacaPilihan(
@@ -90,7 +91,6 @@ public class TransaksiService {
                 return;
             }
         }
-        
     }
 
     /**
@@ -129,7 +129,6 @@ public class TransaksiService {
         }
         System.out.println("-".repeat(57));
         System.out.printf("%-43s %12s%n", "Total", ConsoleHelper.formatRupiah(totalPendapatan));
-
     }
 
     /**
