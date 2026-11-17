@@ -9,10 +9,13 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import model.Admin;
 import model.Akun;
+import model.ItemPesanan;
 import model.Kasir;
 import model.Makanan;
 import model.MenuItem;
 import model.Minuman;
+import model.Pesanan;
+import model.Transaksi;
 
 /**
  * Menyimpan dan membaca data ke file teks (fitur tambahan).
@@ -25,6 +28,7 @@ public class FileManager {
 
     private static final String FILE_MENU = "data/menu.txt";
     private static final String FILE_AKUN = "data/akun.txt";
+    private static final String FILE_TRANSAKSI = "data/transaksi.txt";
 
     /**
      * Menyimpan menu dan akun dari DataStore ke file.
@@ -52,6 +56,8 @@ public class FileManager {
                             + a.getPassword() + "|" + a.getNamaLengkap());
                 }
             }
+
+            simpanTransaksi();
         } catch (IOException e) {
             System.out.println("Gagal menyimpan data: " + e.getMessage());
         }
@@ -103,5 +109,58 @@ public class FileManager {
                 System.out.println("Gagal membaca akun: " + e.getMessage());
             }
         }
+    }
+
+    /**
+     * Menyimpan seluruh riwayat transaksi ke data/transaksi.txt.
+     * Satu transaksi ditulis sebagai satu baris "T" (data transaksi),
+     * diikuti baris "I" untuk setiap item pesanannya. Item disimpan
+     * sebagai salinan (id, nama, harga, jumlah) supaya riwayat tetap
+     * benar walaupun menu diubah atau dihapus Admin di kemudian hari.
+     *
+     * @throws IOException jika file tidak bisa ditulis
+     */
+    private void simpanTransaksi() throws IOException {
+        try (PrintWriter out = new PrintWriter(new FileWriter(FILE_TRANSAKSI))) {
+            for (Transaksi t : DataStore.riwayat) {
+                Pesanan p = t.getPesanan();
+                out.println("T|" + t.getIdTransaksi() + "|" + t.getWaktu()
+                        + "|" + bersih(t.getNamaKasir()) + "|" + t.getMetodePembayaran()
+                        + "|" + t.getSubtotal() + "|" + t.getPajak() + "|" + t.getTotal()
+                        + "|" + p.getIdPesanan() + "|" + p.getNomorMeja());
+                for (ItemPesanan item : p.getDaftarItem()) {
+                    MenuItem m = item.getMenu();
+                    out.println("I|" + m.getKategori() + "|" + m.getId()
+                            + "|" + bersih(m.getNama()) + "|" + m.getHarga()
+                            + "|" + ekstraMenu(m) + "|" + item.getJumlah());
+                }
+            }
+        }
+    }
+
+    /**
+     * Mengambil data tambahan khas jenis menu: pedas (Makanan) atau ukuran (Minuman).
+     *
+     * @param m menu yang dibaca
+     * @return teks data tambahan
+     */
+    private String ekstraMenu(MenuItem m) {
+        if (m instanceof Makanan) {
+            return String.valueOf(((Makanan) m).isPedas());
+        } else if (m instanceof Minuman) {
+            return ((Minuman) m).getUkuran();
+        }
+        return "";
+    }
+
+    /**
+     * Membuang karakter pemisah "|" dan baris baru dari teks bebas
+     * supaya format file tidak rusak.
+     *
+     * @param teks teks yang akan ditulis ke file
+     * @return teks yang aman ditulis
+     */
+    private String bersih(String teks) {
+        return teks == null ? "" : teks.replace('|', '/').replace('\n', ' ').replace('\r', ' ');
     }
 }

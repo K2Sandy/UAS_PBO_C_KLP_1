@@ -78,6 +78,8 @@ public class TransaksiService {
                 transaksi.setTotal(total);
 
                 DataStore.riwayat.add(transaksi);
+                // simpan data transaksi langsung ke file transaksi
+                new FileManager().simpanSemuaData();
                 StrukPrinter.cetak(transaksi);
                 return;
             }
