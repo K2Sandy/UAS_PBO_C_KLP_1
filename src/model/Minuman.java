@@ -7,7 +7,7 @@ package model;
 public class Minuman extends MenuItem {
 
     /** Tambahan harga per gelas untuk ukuran Large. */
-    private static final double TAMBAHAN_LARGE = 2000;
+    public static final double TAMBAHAN_LARGE = 2000;
 
     /** Ukuran minuman: "Regular" atau "Large". */
     private String ukuran;
@@ -49,6 +49,16 @@ public class Minuman extends MenuItem {
     @Override
     public String getKategori() {
         return "Minuman";
+    }
+
+    /**
+     * Mengambil keterangan minuman, yaitu ukurannya.
+     *
+     * @return "Regular" atau "Large"
+     */
+    @Override
+    public String getKeterangan() {
+        return ukuran;
     }
 
     /**

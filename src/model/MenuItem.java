@@ -47,6 +47,15 @@ public abstract class MenuItem {
     public abstract String getKategori();
 
     /**
+     * Mengambil keterangan singkat khas jenis menu untuk ditampilkan
+     * di daftar menu, contoh: "Pedas" untuk makanan atau "Large" untuk
+     * minuman (polymorphism).
+     *
+     * @return teks keterangan
+     */
+    public abstract String getKeterangan();
+
+    /**
      * Mengambil kode unik menu.
      *
      * @return kode unik menu

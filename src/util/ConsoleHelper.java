@@ -123,6 +123,24 @@ public class ConsoleHelper {
     }
 
     /**
+     * Memotong teks yang terlalu panjang supaya kolom tabel tetap lurus,
+     * contoh: potong("Nasi Goreng Spesial Telur", 15) menjadi "Nasi Goreng ...".
+     *
+     * @param teks     teks yang akan ditampilkan
+     * @param panjang  panjang maksimal (minimal 4)
+     * @return teks asli jika cukup pendek, atau potongannya diakhiri "..."
+     */
+    public static String potong(String teks, int panjang) {
+        if (teks == null) {
+            return "";
+        }
+        if (teks.length() <= panjang) {
+            return teks;
+        }
+        return teks.substring(0, Math.max(1, panjang - 3)) + "...";
+    }
+
+    /**
      * Mengubah angka menjadi format rupiah, contoh: 25000 menjadi "Rp25.000".
      *
      * @param nilai jumlah uang

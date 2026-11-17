@@ -18,25 +18,40 @@ public class MenuService {
     public MenuService() {
     }
 
+    /** Format satu baris tabel menu: id, nama, kategori, keterangan, harga, stok. */
+    private static final String FORMAT_BARIS = "%-4s %-17s %-8s %-11s %11s %5s";
+
+    /** Panjang satu baris tabel menu. */
+    private static final int LEBAR_TABEL = 61;
+
     /**
-     * Menampilkan semua menu restoran.
+     * Menampilkan semua menu dalam bentuk tabel: id, nama, kategori,
+     * keterangan (pedas / ukuran), harga per porsi, dan stok.
+     * Harga diambil dari hitungHarga(1), jadi minuman Large langsung
+     * tampil dengan harga yang benar-benar dibayar pelanggan.
      */
     public void tampilkanSemuaMenu() {
+        ConsoleHelper.cetakJudul("DAFTAR MENU");
         if (DataStore.daftarMenu.isEmpty()) {
             ConsoleHelper.cetak("Belum ada menu.");
             return;
         }
-        System.out.println("\n========== DAFTAR MENU ==========");
-        System.out.printf("%-5s %-20s %-12s %-15s %-8s%n",
-                "ID", "Nama", "Kategori", "Harga", "Stok");
+        ConsoleHelper.cetak(String.format(FORMAT_BARIS,
+                "ID", "Nama", "Kategori", "Keterangan", "Harga", "Stok"));
+        ConsoleHelper.cetak("-".repeat(LEBAR_TABEL));
         for (MenuItem menu : DataStore.daftarMenu) {
-            System.out.printf("%-5s %-20s %-12s %-15s %-8d%n",
+            String stok = menu.getStok() > 0 ? String.valueOf(menu.getStok()) : "HABIS";
+            ConsoleHelper.cetak(String.format(FORMAT_BARIS,
                     menu.getId(),
-                    menu.getNama(),
+                    ConsoleHelper.potong(menu.getNama(), 17),
                     menu.getKategori(),
-                    ConsoleHelper.formatRupiah(menu.getHarga()),
-                    menu.getStok());
+                    ConsoleHelper.potong(menu.getKeterangan(), 11),
+                    ConsoleHelper.formatRupiah(menu.hitungHarga(1)),
+                    stok));
         }
+        ConsoleHelper.cetak("-".repeat(LEBAR_TABEL));
+        ConsoleHelper.cetak("Harga minuman Large sudah termasuk tambahan "
+                + ConsoleHelper.formatRupiah(Minuman.TAMBAHAN_LARGE) + ".");
     }
 
     /**

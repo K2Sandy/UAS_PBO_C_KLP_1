@@ -44,6 +44,16 @@ public class Makanan extends MenuItem {
     }
 
     /**
+     * Mengambil keterangan makanan: pedas atau tidak.
+     *
+     * @return "Pedas" atau "Tidak pedas"
+     */
+    @Override
+    public String getKeterangan() {
+        return pedas ? "Pedas" : "Tidak pedas";
+    }
+
+    /**
      * Memeriksa apakah makanan ini pedas.
      *
      * @return true jika makanan ini pedas
