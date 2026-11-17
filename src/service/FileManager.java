@@ -79,7 +79,28 @@ public class FileManager {
     public void muatSemuaData() {
         muatMenu();
         muatAkun();
+        pastikanAdminAda();
         muatTransaksi();
+    }
+
+    /**
+     * Memastikan selalu ada minimal satu akun Admin. Kalau akun.txt kosong
+     * atau rusak sehingga tidak ada Admin, akun admin bawaan dibuat lagi
+     * supaya program tetap bisa dipakai (tidak terkunci).
+     */
+    private void pastikanAdminAda() {
+        for (Akun a : DataStore.daftarAkun.values()) {
+            if (a instanceof Admin) {
+                return;
+            }
+        }
+        String username = "admin";
+        while (DataStore.daftarAkun.containsKey(username)) {
+            username = username + "1";
+        }
+        DataStore.daftarAkun.put(username, new Admin(username, "admin123", "Admin Resto"));
+        System.out.println("Tidak ada akun Admin di data. Akun bawaan dibuat: "
+                + username + " / admin123");
     }
 
     /**
