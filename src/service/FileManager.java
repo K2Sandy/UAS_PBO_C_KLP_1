@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import model.Admin;
 import model.Akun;
 import model.ItemPesanan;
@@ -39,14 +41,8 @@ public class FileManager {
 
             try (PrintWriter out = new PrintWriter(new FileWriter(FILE_MENU))) {
                 for (MenuItem m : DataStore.daftarMenu) {
-                    String ekstra = "";
-                    if (m instanceof Makanan) {
-                        ekstra = String.valueOf(((Makanan) m).isPedas());
-                    } else if (m instanceof Minuman) {
-                        ekstra = ((Minuman) m).getUkuran();
-                    }
                     out.println(m.getKategori() + "|" + m.getId() + "|" + m.getNama()
-                            + "|" + m.getHarga() + "|" + m.getStok() + "|" + ekstra);
+                            + "|" + m.getHarga() + "|" + m.getStok() + "|" + ekstraMenu(m));
                 }
             }
 
@@ -109,6 +105,7 @@ public class FileManager {
                 System.out.println("Gagal membaca akun: " + e.getMessage());
             }
         }
+        muatTransaksi();
     }
 
     /**
@@ -135,6 +132,53 @@ public class FileManager {
                             + "|" + ekstraMenu(m) + "|" + item.getJumlah());
                 }
             }
+        }
+    }
+
+    /**
+     * Membaca riwayat transaksi dari data/transaksi.txt ke DataStore.riwayat.
+     * Baris yang rusak dilewati supaya satu baris buruk tidak menghapus
+     * seluruh riwayat. Jika file belum ada, riwayat dibiarkan kosong.
+     */
+    private void muatTransaksi() {
+        if (!Files.exists(Paths.get(FILE_TRANSAKSI))) {
+            return;
+        }
+        try (BufferedReader in = new BufferedReader(new FileReader(FILE_TRANSAKSI))) {
+            DataStore.riwayat.clear();
+            Pesanan pesananAktif = null;
+            String baris;
+            while ((baris = in.readLine()) != null) {
+                String[] f = baris.split("\\|", -1);
+                try {
+                    if (f[0].equals("T") && f.length >= 10) {
+                        Transaksi t = new Transaksi();
+                        t.setIdTransaksi(f[1]);
+                        t.setWaktu(LocalDateTime.parse(f[2]));
+                        t.setNamaKasir(f[3]);
+                        t.setMetodePembayaran(f[4]);
+                        t.setSubtotal(Double.parseDouble(f[5]));
+                        t.setPajak(Double.parseDouble(f[6]));
+                        t.setTotal(Double.parseDouble(f[7]));
+                        pesananAktif = new Pesanan(f[8], Integer.parseInt(f[9]));
+                        t.setPesanan(pesananAktif);
+                        DataStore.riwayat.add(t);
+                    } else if (f[0].equals("I") && f.length >= 7 && pesananAktif != null) {
+                        double harga = Double.parseDouble(f[4]);
+                        MenuItem menu = f[1].equals("Makanan")
+                                ? new Makanan(f[2], f[3], harga, 0, Boolean.parseBoolean(f[5]))
+                                : new Minuman(f[2], f[3], harga, 0, f[5]);
+                        pesananAktif.tambahItem(new ItemPesanan(menu, Integer.parseInt(f[6])));
+                    }
+                } catch (NumberFormatException | DateTimeParseException e) {
+                    // baris rusak: lewati, dan jangan tempelkan item berikutnya ke transaksi lain
+                    if (f[0].equals("T")) {
+                        pesananAktif = null;
+                    }
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Gagal membaca transaksi: " + e.getMessage());
         }
     }
 
