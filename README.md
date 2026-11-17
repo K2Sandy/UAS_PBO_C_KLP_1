@@ -26,8 +26,20 @@ Jalankan:
 java -cp out Main
 ```
 
-Untuk saat ini beberapa fitur masih kerangka (belum ada isinya), jadi memilih
-menu tertentu belum menampilkan apa-apa. Fitur diisi bertahap oleh anggota tim.
+## Fitur
+
+Admin:
+- Kelola menu (tambah, ubah, hapus)
+- Kelola akun kasir
+- Lihat riwayat transaksi dan laporan penjualan
+
+Kasir:
+- Lihat daftar menu
+- Buat pesanan
+- Pembayaran (Tunai, QRIS, Debit) dan cetak struk
+- Lihat riwayat transaksi sendiri
+
+Data disimpan ke file sehingga tidak hilang saat aplikasi ditutup.
 
 ## Akun untuk Uji Coba
 
