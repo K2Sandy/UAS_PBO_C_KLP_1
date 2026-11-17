@@ -217,21 +217,27 @@ public class MenuService {
     }
 
     /**
-     * Menghapus menu berdasarkan ID.
+     * Menghapus menu berdasarkan ID setelah Admin mengonfirmasi.
+     * Riwayat transaksi lama tidak ikut terhapus karena item transaksi
+     * disimpan sebagai salinan.
      */
     public void hapusMenu() {
         tampilkanSemuaMenu();
-        String id = ConsoleHelper.bacaTeks("\nMasukkan ID menu yang ingin dihapus: ");
+        String id = ConsoleHelper.bacaTeks("\nMasukkan ID menu yang ingin dihapus (Enter = batal): ");
+        if (id.isEmpty()) {
+            return;
+        }
         MenuItem menu = DataStore.cariMenu(id);
         if (menu == null) {
             ConsoleHelper.cetak("Menu dengan ID tersebut tidak ditemukan.");
             return;
         }
 
-        String konfirmasi = ConsoleHelper.bacaTeks("Yakin ingin menghapus menu ini? (y/n): ");
-        if (konfirmasi.equalsIgnoreCase("y")) {
+        int yakin = ConsoleHelper.bacaPilihan("Hapus " + menu.getId() + " - " + menu.getNama()
+                + "? (1 = ya, 0 = tidak): ", 0, 1);
+        if (yakin == 1) {
             DataStore.daftarMenu.remove(menu);
-            ConsoleHelper.cetak("Menu berhasil dihapus!");
+            ConsoleHelper.cetak("Menu " + menu.getNama() + " berhasil dihapus.");
         } else {
             ConsoleHelper.cetak("Penghapusan dibatalkan.");
         }
