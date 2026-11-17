@@ -171,46 +171,49 @@ public class MenuService {
     }
 
     /**
-     * Mengubah data menu.
+     * Mengubah data menu yang sudah ada: nama, harga, stok, atau
+     * keterangan khasnya (pedas untuk makanan, ukuran untuk minuman).
      */
     public void editMenu() {
         tampilkanSemuaMenu();
-        String id = ConsoleHelper.bacaTeks("\nMasukkan ID menu yang ingin diedit: ");
+        String id = ConsoleHelper.bacaTeks("\nMasukkan ID menu yang ingin diedit (Enter = batal): ");
+        if (id.isEmpty()) {
+            return;
+        }
         MenuItem menu = DataStore.cariMenu(id);
         if (menu == null) {
             ConsoleHelper.cetak("Menu dengan ID tersebut tidak ditemukan.");
             return;
         }
 
+        ConsoleHelper.cetak("Mengedit " + menu.getId() + " - " + menu.getNama()
+                + " (" + ConsoleHelper.formatRupiah(menu.getHarga()) + ", stok " + menu.getStok()
+                + ", " + menu.getKeterangan() + ")");
         ConsoleHelper.cetak("1. Ubah nama");
         ConsoleHelper.cetak("2. Ubah harga");
         ConsoleHelper.cetak("3. Ubah stok");
-        int pilihan = ConsoleHelper.bacaAngka("Pilih data yang ingin diubah: ");
+        ConsoleHelper.cetak(menu instanceof Minuman ? "4. Ubah ukuran" : "4. Ubah status pedas");
+        ConsoleHelper.cetak("0. Batal");
+        int pilihan = ConsoleHelper.bacaPilihan("Pilih data yang ingin diubah: ", 0, 4);
+
         switch (pilihan) {
-            case 1:
-                menu.setNama(ConsoleHelper.bacaTeks("Nama baru: "));
-                break;
-            case 2:
-                double harga = ConsoleHelper.bacaDesimal("Harga baru: ");
-                if (harga <= 0) {
-                    ConsoleHelper.cetak("Harga harus lebih dari 0.");
-                    return;
+            case 1 -> menu.setNama(ConsoleHelper.bacaTeksWajib("Nama baru: "));
+            case 2 -> menu.setHarga(bacaHarga("Harga baru (Rp): "));
+            case 3 -> menu.setStok(bacaStok("Stok baru: "));
+            case 4 -> {
+                if (menu instanceof Minuman minuman) {
+                    minuman.setUkuran(bacaUkuran());
+                } else if (menu instanceof Makanan makanan) {
+                    makanan.setPedas(ConsoleHelper.bacaPilihan(
+                            "Pedas? (1 = ya, 0 = tidak): ", 0, 1) == 1);
                 }
-                menu.setHarga(harga);
-                break;
-            case 3:
-                int stok = ConsoleHelper.bacaAngka("Stok baru: ");
-                if (stok < 0) {
-                    ConsoleHelper.cetak("Stok tidak boleh negatif.");
-                    return;
-                }
-                menu.setStok(stok);
-                break;
-            default:
-                ConsoleHelper.cetak("Pilihan tidak valid.");
+            }
+            default -> {
+                ConsoleHelper.cetak("Edit dibatalkan.");
                 return;
+            }
         }
-        ConsoleHelper.cetak("Menu berhasil diperbarui!");
+        ConsoleHelper.cetak("Menu berhasil diperbarui.");
     }
 
     /**
