@@ -85,35 +85,90 @@ public class AkunService {
         ConsoleHelper.cetak("Jumlah kasir: " + daftar.size());
     }
 
-    /** Menambahkan akun Kasir baru dengan username yang unik. */
+    /**
+     * Menambahkan akun Kasir baru. Username disimpan dengan huruf kecil
+     * dan harus unik; nama lengkap juga harus unik karena dipakai di struk
+     * dan riwayat. Isian yang salah ditanyakan ulang.
+     */
     private void tambahKasir() {
         ConsoleHelper.cetakJudul("TAMBAH AKUN KASIR");
 
-        String username = ConsoleHelper.bacaTeks("Masukkan username: ");
-        if (username.isBlank()) {
-            ConsoleHelper.cetak("Username tidak boleh kosong.");
-            return;
+        String username;
+        while (true) {
+            username = ConsoleHelper.bacaTeks("Username (3-15 huruf/angka, Enter = batal): ").toLowerCase();
+            if (username.isEmpty()) {
+                ConsoleHelper.cetak("Tambah kasir dibatalkan.");
+                return;
+            }
+            String masalah = cekUsername(username);
+            if (masalah == null) {
+                break;
+            }
+            ConsoleHelper.cetak(masalah);
+        }
+
+        String password = bacaPasswordBaru("Password (minimal 4 karakter): ");
+
+        String namaLengkap;
+        while (true) {
+            namaLengkap = ConsoleHelper.bacaTeksWajib("Nama lengkap: ");
+            if (!namaSudahDipakai(namaLengkap)) {
+                break;
+            }
+            ConsoleHelper.cetak("Nama itu sudah dipakai akun lain. Tambahkan nama belakang atau inisial.");
+        }
+
+        DataStore.daftarAkun.put(username, new Kasir(username, password, namaLengkap));
+        ConsoleHelper.cetak("Akun kasir " + username + " (" + namaLengkap + ") berhasil ditambahkan.");
+    }
+
+    /**
+     * Memeriksa apakah username boleh dipakai untuk akun baru.
+     *
+     * @param username username huruf kecil yang akan diperiksa
+     * @return pesan kesalahan, atau null jika username valid
+     */
+    private String cekUsername(String username) {
+        if (!username.matches("[a-z0-9_.]{3,15}")) {
+            return "Username harus 3-15 karakter: huruf, angka, titik, atau garis bawah (tanpa spasi).";
         }
         if (DataStore.daftarAkun.containsKey(username)) {
-            ConsoleHelper.cetak("Username sudah digunakan. Gunakan username lain.");
-            return;
+            return "Username sudah digunakan. Gunakan username lain.";
         }
+        return null;
+    }
 
-        String password = ConsoleHelper.bacaTeks("Masukkan password: ");
-        if (password.isBlank()) {
-            ConsoleHelper.cetak("Password tidak boleh kosong.");
-            return;
+    /**
+     * Menanyakan password baru sampai minimal 4 karakter, tanpa spasi
+     * dan tanpa tanda "|".
+     *
+     * @param prompt pertanyaan yang ditampilkan
+     * @return password yang valid
+     */
+    private String bacaPasswordBaru(String prompt) {
+        while (true) {
+            String password = ConsoleHelper.bacaTeks(prompt);
+            if (password.length() >= 4 && !password.contains(" ") && !password.contains("|")) {
+                return password;
+            }
+            ConsoleHelper.cetak("Password minimal 4 karakter, tanpa spasi dan tanpa tanda |.");
         }
+    }
 
-        String namaLengkap = ConsoleHelper.bacaTeks("Masukkan nama lengkap: ");
-        if (namaLengkap.isBlank()) {
-            ConsoleHelper.cetak("Nama lengkap tidak boleh kosong.");
-            return;
+    /**
+     * Memeriksa apakah nama lengkap sudah dipakai akun lain
+     * (huruf besar/kecil dianggap sama).
+     *
+     * @param namaLengkap nama yang akan diperiksa
+     * @return true jika sudah ada akun dengan nama tersebut
+     */
+    private boolean namaSudahDipakai(String namaLengkap) {
+        for (Akun akun : DataStore.daftarAkun.values()) {
+            if (akun.getNamaLengkap().equalsIgnoreCase(namaLengkap)) {
+                return true;
+            }
         }
-
-        Kasir kasirBaru = new Kasir(username, password, namaLengkap);
-        DataStore.daftarAkun.put(username, kasirBaru);
-        ConsoleHelper.cetak("Akun kasir berhasil ditambahkan.");
+        return false;
     }
 
     /** Menghapus akun Kasir berdasarkan username; akun Admin dilindungi. */

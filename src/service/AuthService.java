@@ -21,7 +21,11 @@ public class AuthService {
      * @throws LoginGagalException jika username tidak ada atau password salah
      */
     public Akun login(String username, String password) throws LoginGagalException {
-        Akun akun = DataStore.daftarAkun.get(username);
+        // Username tidak membedakan huruf besar/kecil: "Kasir" sama dengan "kasir".
+        Akun akun = DataStore.daftarAkun.get(username.trim());
+        if (akun == null) {
+            akun = DataStore.daftarAkun.get(username.trim().toLowerCase());
+        }
         if (akun == null || !akun.getPassword().equals(password)) {
             throw new LoginGagalException("Username atau password salah.");
         }
