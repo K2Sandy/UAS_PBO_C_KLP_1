@@ -60,9 +60,23 @@ public class TransaksiService {
             int pilihan = ConsoleHelper.bacaPilihan("Pilih: ", 0, metode.length);
 
             Pembayaran dipilih = metode[pilihan - 1];
+        
+        // 3. Pembayaran berhasil: buat transaksi, simpan, cetak struk
+            if (dipilih.bayar(total)) {
+                Transaksi transaksi = new Transaksi();
+                transaksi.setIdTransaksi(String.format("T%03d", DataStore.riwayat.size() + 1));
+                transaksi.setPesanan(pesanan);
+                transaksi.setNamaKasir(kasir.getNamaLengkap());
+                transaksi.setMetodePembayaran(dipilih.getNamaMetode());
+                transaksi.setSubtotal(subtotal);
+                transaksi.setPajak(pajak);
+                transaksi.setTotal(total);
+
+                DataStore.riwayat.add(transaksi);
+                StrukPrinter.cetak(transaksi);
+                return;
+            }
         }
-        //   3. Kalau pembayaran berhasil: buat objek Transaksi, isi dengan
-        //      setter, add ke DataStore.riwayat, lalu StrukPrinter.cetak(transaksi).
         //   4. Kalau gagal: tampilkan pesan dan jangan simpan transaksi.
     }
 
