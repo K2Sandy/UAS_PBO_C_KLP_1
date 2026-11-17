@@ -14,6 +14,9 @@ import util.InputTidakValidException;
  */
 public class MenuService {
 
+    /** Harga tertinggi yang boleh diisi Admin (muat di kolom tabel). */
+    private static final long HARGA_MAKSIMAL = 9_999_999;
+
     /** Membuat layanan menu. */
     public MenuService() {
     }
@@ -55,45 +58,116 @@ public class MenuService {
     }
 
     /**
-     * Menambahkan menu makanan atau minuman.
+     * Menambahkan menu makanan atau minuman. Setiap data ditanyakan ulang
+     * sampai valid, jadi Admin tidak perlu mengulang dari awal.
      */
     public void tambahMenu() {
-        try {
-            ConsoleHelper.cetakJudul("TAMBAH MENU");
-            ConsoleHelper.cetak("1. Makanan");
-            ConsoleHelper.cetak("2. Minuman");
-            int jenis = ConsoleHelper.bacaAngka("Pilih jenis menu: ");
-
-            String id = ConsoleHelper.bacaTeks("Masukkan ID: ");
-            if (DataStore.cariMenu(id) != null) {
-                throw new InputTidakValidException("ID menu sudah digunakan!");
-            }
-
-            String nama = ConsoleHelper.bacaTeks("Masukkan nama: ");
-            double harga = ConsoleHelper.bacaDesimal("Masukkan harga: ");
-            int stok = ConsoleHelper.bacaAngka("Masukkan stok: ");
-
-            if (harga <= 0 || stok < 0 || nama.isEmpty()) {
-                throw new InputTidakValidException("Data menu tidak valid!");
-            }
-
-            MenuItem menu;
-            if (jenis == 1) {
-                String jawaban = ConsoleHelper.bacaTeks("pedas atau tidak (ya/tidak): ");
-                boolean pedas = jawaban.equalsIgnoreCase("ya");
-                menu = new Makanan(id, nama, harga, stok, pedas);
-            } else if (jenis == 2) {
-                String ukuran = ConsoleHelper.bacaTeks("Masukkan ukuran (Regular/Large): ");
-                menu = new Minuman(id, nama, harga, stok, ukuran);
-            } else {
-                throw new InputTidakValidException("Pilihan jenis tidak valid!");
-            }
-
-            DataStore.daftarMenu.add(menu);
-            ConsoleHelper.cetak("Menu berhasil ditambahkan!");
-        } catch (InputTidakValidException e) {
-            ConsoleHelper.cetak("Gagal: " + e.getMessage());
+        ConsoleHelper.cetakJudul("TAMBAH MENU");
+        ConsoleHelper.cetak("1. Makanan");
+        ConsoleHelper.cetak("2. Minuman");
+        ConsoleHelper.cetak("0. Batal");
+        int jenis = ConsoleHelper.bacaPilihan("Pilih jenis menu: ", 0, 2);
+        if (jenis == 0) {
+            ConsoleHelper.cetak("Tambah menu dibatalkan.");
+            return;
         }
+
+        String id = bacaIdBaru();
+        String nama = ConsoleHelper.bacaTeksWajib("Nama menu: ");
+        double harga = bacaHarga("Harga (Rp): ");
+        int stok = bacaStok("Stok awal: ");
+
+        MenuItem menu;
+        if (jenis == 1) {
+            boolean pedas = ConsoleHelper.bacaPilihan("Pedas? (1 = ya, 0 = tidak): ", 0, 1) == 1;
+            menu = new Makanan(id, nama, harga, stok, pedas);
+        } else {
+            menu = new Minuman(id, nama, harga, stok, bacaUkuran());
+        }
+
+        DataStore.daftarMenu.add(menu);
+        ConsoleHelper.cetak("Menu " + menu.getId() + " - " + menu.getNama() + " berhasil ditambahkan.");
+    }
+
+    /**
+     * Menanyakan id menu baru sampai didapat id yang valid dan belum dipakai.
+     * Id disimpan dengan huruf besar, contoh: "m10" menjadi "M10".
+     *
+     * @return id menu baru yang valid
+     */
+    private String bacaIdBaru() {
+        while (true) {
+            String id = ConsoleHelper.bacaTeksWajib("ID menu, 2-4 huruf/angka (contoh M04 / N03): ").toUpperCase();
+            try {
+                validasiIdBaru(id);
+                return id;
+            } catch (InputTidakValidException e) {
+                ConsoleHelper.cetak(e.getMessage());
+            }
+        }
+    }
+
+    /**
+     * Memeriksa apakah id boleh dipakai untuk menu baru.
+     *
+     * @param id id yang akan diperiksa (sudah huruf besar)
+     * @throws InputTidakValidException jika id bukan 2-4 huruf/angka
+     *                                  atau sudah dipakai menu lain
+     */
+    private void validasiIdBaru(String id) throws InputTidakValidException {
+        // 2-4 karakter supaya muat di kolom tabel, dan tidak bisa bentrok
+        // dengan perintah satu karakter di layar pesanan kasir (misalnya "0")
+        if (!id.matches("[A-Z0-9]{2,4}")) {
+            throw new InputTidakValidException("ID harus 2-4 karakter huruf atau angka, tanpa spasi.");
+        }
+        if (DataStore.cariMenu(id) != null) {
+            throw new InputTidakValidException("ID " + id + " sudah dipakai menu lain.");
+        }
+    }
+
+    /**
+     * Menanyakan harga sampai lebih dari 0 dan paling banyak Rp9.999.999.
+     * Titik ribuan boleh ditulis.
+     *
+     * @param prompt pertanyaan yang ditampilkan
+     * @return harga dalam rupiah
+     */
+    private double bacaHarga(String prompt) {
+        while (true) {
+            long harga = ConsoleHelper.bacaRupiah(prompt);
+            if (harga > 0 && harga <= HARGA_MAKSIMAL) {
+                return harga;
+            }
+            ConsoleHelper.cetak("Harga harus antara Rp1 dan "
+                    + ConsoleHelper.formatRupiah(HARGA_MAKSIMAL) + ".");
+        }
+    }
+
+    /**
+     * Menanyakan jumlah stok sampai tidak negatif.
+     *
+     * @param prompt pertanyaan yang ditampilkan
+     * @return jumlah stok
+     */
+    private int bacaStok(String prompt) {
+        while (true) {
+            int stok = ConsoleHelper.bacaAngka(prompt);
+            if (stok >= 0) {
+                return stok;
+            }
+            ConsoleHelper.cetak("Stok tidak boleh negatif.");
+        }
+    }
+
+    /**
+     * Menanyakan ukuran minuman lewat pilihan angka.
+     *
+     * @return "Regular" atau "Large"
+     */
+    private String bacaUkuran() {
+        ConsoleHelper.cetak("Ukuran: 1. Regular   2. Large (+"
+                + ConsoleHelper.formatRupiah(Minuman.TAMBAHAN_LARGE) + ")");
+        return ConsoleHelper.bacaPilihan("Pilih ukuran: ", 1, 2) == 1 ? "Regular" : "Large";
     }
 
     /**

@@ -115,9 +115,54 @@ public class ConsoleHelper {
         while (true) {
             String input = bacaTeks(prompt);
             try {
-                return Double.parseDouble(input);
+                double angka = Double.parseDouble(input);
+                if (Double.isFinite(angka)) {
+                    return angka;
+                }
             } catch (NumberFormatException e) {
-                System.out.println("Input harus berupa angka. Coba lagi.");
+                // ditangani di bawah: tanya ulang
+            }
+            System.out.println("Input harus berupa angka. Coba lagi.");
+        }
+    }
+
+    /**
+     * Membaca nominal rupiah (bilangan bulat, tidak negatif). Titik pemisah
+     * ribuan dan awalan "Rp" boleh ditulis, jadi "25000", "25.000", dan
+     * "Rp25.000" sama-sama dibaca 25000. Titik harus memisahkan tiga angka,
+     * jadi "12.5" atau "50000.00" ditolak (bukan dibaca 125 / 5.000.000).
+     * Bertanya ulang sampai valid.
+     *
+     * @param prompt pertanyaan yang ditampilkan
+     * @return nominal rupiah yang dimasukkan pengguna
+     */
+    public static long bacaRupiah(String prompt) {
+        while (true) {
+            String input = bacaTeks(prompt).replace("Rp", "").replace("rp", "").replace(" ", "");
+            // boleh: 25000 atau 25.000 / 1.250.000 (titik tiap tiga angka)
+            if (input.matches("\\d{1,12}") || input.matches("\\d{1,3}(\\.\\d{3}){1,3}")) {
+                return Long.parseLong(input.replace(".", ""));
+            }
+            System.out.println("Masukkan nominal rupiah tanpa koma, contoh: 25000 atau 25.000.");
+        }
+    }
+
+    /**
+     * Membaca teks yang wajib diisi. Bertanya ulang jika kosong atau
+     * mengandung tanda "|" (tanda itu dipakai sebagai pemisah di file data).
+     *
+     * @param prompt pertanyaan yang ditampilkan
+     * @return teks yang tidak kosong dan tanpa tanda "|"
+     */
+    public static String bacaTeksWajib(String prompt) {
+        while (true) {
+            String input = bacaTeks(prompt);
+            if (input.isEmpty()) {
+                System.out.println("Tidak boleh kosong. Coba lagi.");
+            } else if (input.contains("|")) {
+                System.out.println("Tidak boleh mengandung tanda |. Coba lagi.");
+            } else {
+                return input;
             }
         }
     }
