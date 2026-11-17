@@ -10,8 +10,11 @@ import java.util.Scanner;
  */
 public class ConsoleHelper {
 
+    /** Satu-satunya Scanner untuk membaca keyboard di seluruh program. */
     private static final Scanner scanner = new Scanner(System.in);
-    private static final int LEBAR = 44;
+
+    /** Lebar garis dan tampilan (dalam karakter), dipakai juga oleh struk. */
+    public static final int LEBAR = 44;
 
     /** Class bantu, tidak perlu dibuat objeknya. */
     private ConsoleHelper() {

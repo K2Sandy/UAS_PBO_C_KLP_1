@@ -6,6 +6,9 @@ package util;
  */
 public class InputTidakValidException extends Exception {
 
+    /** Versi class untuk serialisasi (diwajibkan oleh Exception). */
+    private static final long serialVersionUID = 1L;
+
     /**
      * Membuat exception input tidak valid.
      *

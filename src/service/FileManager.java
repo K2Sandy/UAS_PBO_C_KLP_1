@@ -21,16 +21,24 @@ import model.Transaksi;
 
 /**
  * Menyimpan dan membaca data ke file teks (fitur tambahan).
- * Dipanggil dari Main: muat data saat program mulai,
- * simpan data saat program selesai.
- * Yang disimpan: menu dan akun, di folder data/.
+ * Dipanggil dari Main: muat data saat program mulai, simpan data saat
+ * program berhenti, dan dari TransaksiService setiap pembayaran berhasil.
+ * Yang disimpan di folder data/ (relatif terhadap folder tempat program
+ * dijalankan): menu.txt, akun.txt, dan transaksi.txt.
  * Setiap baris satu data, dipisah dengan tanda "|".
  */
 public class FileManager {
 
+    /** Lokasi file data menu. */
     private static final String FILE_MENU = "data/menu.txt";
+    /** Lokasi file data akun. */
     private static final String FILE_AKUN = "data/akun.txt";
+    /** Lokasi file riwayat transaksi. */
     private static final String FILE_TRANSAKSI = "data/transaksi.txt";
+
+    /** Membuat pengelola file. */
+    public FileManager() {
+    }
 
     /**
      * Menyimpan menu, akun, dan riwayat transaksi dari DataStore ke file.

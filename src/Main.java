@@ -12,6 +12,10 @@ import util.LoginGagalException;
  */
 public class Main {
 
+    /** Class titik awal, tidak perlu dibuat objeknya. */
+    private Main() {
+    }
+
     /**
      * Menjalankan program.
      *

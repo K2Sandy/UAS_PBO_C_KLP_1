@@ -8,6 +8,10 @@ import util.LoginGagalException;
  */
 public class AuthService {
 
+    /** Membuat layanan login. */
+    public AuthService() {
+    }
+
     /**
      * Memeriksa username dan password.
      *
