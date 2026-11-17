@@ -6,8 +6,9 @@ import util.ConsoleHelper;
 import util.LoginGagalException;
 
 /**
- * Titik awal program KasirResto. Menampilkan layar login,
- * lalu menjalankan menu sesuai peran akun (Admin atau Kasir).
+ * Titik awal program KasirResto. Memuat data dari folder data/,
+ * menampilkan layar login, lalu menjalankan menu sesuai peran akun
+ * (Admin atau Kasir). Data disimpan otomatis saat program berhenti.
  */
 public class Main {
 
@@ -20,6 +21,11 @@ public class Main {
         DataStore.isiDataAwal();
         FileManager fileManager = new FileManager();
         fileManager.muatSemuaData();
+
+        // Data disimpan setiap kali program berhenti, termasuk saat
+        // ditutup paksa (Ctrl+C) atau input habis (Ctrl+D / Ctrl+Z),
+        // supaya perubahan Admin tidak hilang.
+        Runtime.getRuntime().addShutdownHook(new Thread(fileManager::simpanSemuaData));
 
         AuthService authService = new AuthService();
         boolean berjalan = true;
@@ -46,7 +52,6 @@ public class Main {
             }
         }
 
-        fileManager.simpanSemuaData();
-        ConsoleHelper.cetak("Terima kasih. Program selesai.");
+        ConsoleHelper.cetak("Data disimpan. Terima kasih, program selesai.");
     }
 }

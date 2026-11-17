@@ -44,7 +44,8 @@ public class ConsoleHelper {
 
     /**
      * Membaca satu baris teks dari pengguna.
-     * Jika input sudah habis (misalnya Ctrl+D), program berhenti dengan rapi.
+     * Jika input sudah habis (misalnya Ctrl+D), program berhenti dengan rapi
+     * dan data tetap disimpan lewat shutdown hook yang didaftarkan di Main.
      *
      * @param prompt pertanyaan yang ditampilkan
      * @return teks yang diketik pengguna (tanpa spasi di pinggir)
