@@ -18,6 +18,9 @@ import util.StrukPrinter;
  */
 public class TransaksiService {
 
+    /** Tarif pajak 10 persen. */
+    private static final double TARIF_PAJAK = 0.10;
+
     /**
      * Memproses pembayaran sebuah pesanan sampai struk tercetak.
      *
@@ -26,7 +29,10 @@ public class TransaksiService {
      */
     public void prosesPembayaran(Pesanan pesanan, Kasir kasir) {
         // TODO:
-        //   1. Hitung subtotal, pajak 10 persen, dan total.
+        // 1. Hitung subtotal, pajak, dan total
+        double subtotal = pesanan.hitungSubtotal();
+        double pajak = subtotal * TARIF_PAJAK;
+        double total = subtotal + pajak;
         //   2. Tampilkan ringkasan, minta kasir memilih metode
         //      (Tunai, Qris, atau Debit) lalu panggil bayar(total) milik
         //      objek Pembayaran yang dipilih.
