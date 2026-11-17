@@ -33,9 +33,19 @@ public class TransaksiService {
         double subtotal = pesanan.hitungSubtotal();
         double pajak = subtotal * TARIF_PAJAK;
         double total = subtotal + pajak;
-        //   2. Tampilkan ringkasan, minta kasir memilih metode
-        //      (Tunai, Qris, atau Debit) lalu panggil bayar(total) milik
-        //      objek Pembayaran yang dipilih.
+        // 2. Tampilkan ringkasan pesanan
+        ConsoleHelper.cetakJudul("RINGKASAN PESANAN " + pesanan.getIdPesanan()
+                + " (Meja " + pesanan.getNomorMeja() + ")");
+        for (ItemPesanan item : pesanan.getDaftarItem()) {
+            ConsoleHelper.cetak(String.format("%-20s %3d x %12s",
+                    item.getMenu().getNama(),
+                    item.getJumlah(),
+                    ConsoleHelper.formatRupiah(item.getSubtotal())));
+        }
+        ConsoleHelper.cetak("-".repeat(44));
+        ConsoleHelper.cetak(String.format("%-20s %23s", "Subtotal", ConsoleHelper.formatRupiah(subtotal)));
+        ConsoleHelper.cetak(String.format("%-20s %23s", "Pajak (10%)", ConsoleHelper.formatRupiah(pajak)));
+        ConsoleHelper.cetak(String.format("%-20s %23s", "TOTAL", ConsoleHelper.formatRupiah(total)));
         //   3. Kalau pembayaran berhasil: buat objek Transaksi, isi dengan
         //      setter, add ke DataStore.riwayat, lalu StrukPrinter.cetak(transaksi).
         //   4. Kalau gagal: tampilkan pesan dan jangan simpan transaksi.
