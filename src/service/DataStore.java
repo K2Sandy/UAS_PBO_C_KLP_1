@@ -31,6 +31,27 @@ public class DataStore {
     }
 
     /**
+     * Mencari menu berdasarkan id (huruf besar/kecil dianggap sama,
+     * spasi di pinggir diabaikan). Dipakai oleh MenuService dan PesananService
+     * supaya cara mencari menu cukup ditulis di satu tempat.
+     *
+     * @param id kode menu yang dicari, contoh: "M01" atau "m01"
+     * @return menu yang cocok, atau null jika tidak ada
+     */
+    public static MenuItem cariMenu(String id) {
+        if (id == null) {
+            return null;
+        }
+        String dicari = id.trim();
+        for (MenuItem menu : daftarMenu) {
+            if (menu.getId().equalsIgnoreCase(dicari)) {
+                return menu;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Mengisi data awal agar program bisa langsung dicoba:
      * satu akun Admin, satu akun Kasir, dan beberapa menu contoh.
      */

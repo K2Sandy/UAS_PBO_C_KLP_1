@@ -50,10 +50,8 @@ public class MenuService {
             int jenis = ConsoleHelper.bacaAngka("Pilih jenis menu: ");
 
             String id = ConsoleHelper.bacaTeks("Masukkan ID: ");
-            for (MenuItem menu : DataStore.daftarMenu) {
-                if (menu.getId().equalsIgnoreCase(id)) {
-                    throw new InputTidakValidException("ID menu sudah digunakan!");
-                }
+            if (DataStore.cariMenu(id) != null) {
+                throw new InputTidakValidException("ID menu sudah digunakan!");
             }
 
             String nama = ConsoleHelper.bacaTeks("Masukkan nama: ");
@@ -89,42 +87,41 @@ public class MenuService {
     public void editMenu() {
         tampilkanSemuaMenu();
         String id = ConsoleHelper.bacaTeks("\nMasukkan ID menu yang ingin diedit: ");
-
-        for (MenuItem menu : DataStore.daftarMenu) {
-            if (menu.getId().equalsIgnoreCase(id)) {
-                ConsoleHelper.cetak("1. Ubah nama");
-                ConsoleHelper.cetak("2. Ubah harga");
-                ConsoleHelper.cetak("3. Ubah stok");
-                int pilihan = ConsoleHelper.bacaAngka("Pilih data yang ingin diubah: ");
-                switch (pilihan) {
-                    case 1:
-                        menu.setNama(ConsoleHelper.bacaTeks("Nama baru: "));
-                        break;
-                    case 2:
-                        double harga = ConsoleHelper.bacaDesimal("Harga baru: ");
-                        if (harga <= 0) {
-                            ConsoleHelper.cetak("Harga harus lebih dari 0.");
-                            return;
-                        }
-                        menu.setHarga(harga);
-                        break;
-                    case 3:
-                        int stok = ConsoleHelper.bacaAngka("Stok baru: ");
-                        if (stok < 0) {
-                            ConsoleHelper.cetak("Stok tidak boleh negatif.");
-                            return;
-                        }
-                        menu.setStok(stok);
-                        break;
-                    default:
-                        ConsoleHelper.cetak("Pilihan tidak valid.");
-                        return;
-                }
-                ConsoleHelper.cetak("Menu berhasil diperbarui!");
-                return;
-            }
+        MenuItem menu = DataStore.cariMenu(id);
+        if (menu == null) {
+            ConsoleHelper.cetak("Menu dengan ID tersebut tidak ditemukan.");
+            return;
         }
-        ConsoleHelper.cetak("Menu dengan ID tersebut tidak ditemukan.");
+
+        ConsoleHelper.cetak("1. Ubah nama");
+        ConsoleHelper.cetak("2. Ubah harga");
+        ConsoleHelper.cetak("3. Ubah stok");
+        int pilihan = ConsoleHelper.bacaAngka("Pilih data yang ingin diubah: ");
+        switch (pilihan) {
+            case 1:
+                menu.setNama(ConsoleHelper.bacaTeks("Nama baru: "));
+                break;
+            case 2:
+                double harga = ConsoleHelper.bacaDesimal("Harga baru: ");
+                if (harga <= 0) {
+                    ConsoleHelper.cetak("Harga harus lebih dari 0.");
+                    return;
+                }
+                menu.setHarga(harga);
+                break;
+            case 3:
+                int stok = ConsoleHelper.bacaAngka("Stok baru: ");
+                if (stok < 0) {
+                    ConsoleHelper.cetak("Stok tidak boleh negatif.");
+                    return;
+                }
+                menu.setStok(stok);
+                break;
+            default:
+                ConsoleHelper.cetak("Pilihan tidak valid.");
+                return;
+        }
+        ConsoleHelper.cetak("Menu berhasil diperbarui!");
     }
 
     /**
@@ -133,19 +130,18 @@ public class MenuService {
     public void hapusMenu() {
         tampilkanSemuaMenu();
         String id = ConsoleHelper.bacaTeks("\nMasukkan ID menu yang ingin dihapus: ");
-
-        for (MenuItem menu : DataStore.daftarMenu) {
-            if (menu.getId().equalsIgnoreCase(id)) {
-                String konfirmasi = ConsoleHelper.bacaTeks("Yakin ingin menghapus menu ini? (y/n): ");
-                if (konfirmasi.equalsIgnoreCase("y")) {
-                    DataStore.daftarMenu.remove(menu);
-                    ConsoleHelper.cetak("Menu berhasil dihapus!");
-                } else {
-                    ConsoleHelper.cetak("Penghapusan dibatalkan.");
-                }
-                return;
-            }
+        MenuItem menu = DataStore.cariMenu(id);
+        if (menu == null) {
+            ConsoleHelper.cetak("Menu dengan ID tersebut tidak ditemukan.");
+            return;
         }
-        ConsoleHelper.cetak("Menu dengan ID tersebut tidak ditemukan.");
+
+        String konfirmasi = ConsoleHelper.bacaTeks("Yakin ingin menghapus menu ini? (y/n): ");
+        if (konfirmasi.equalsIgnoreCase("y")) {
+            DataStore.daftarMenu.remove(menu);
+            ConsoleHelper.cetak("Menu berhasil dihapus!");
+        } else {
+            ConsoleHelper.cetak("Penghapusan dibatalkan.");
+        }
     }
 }
