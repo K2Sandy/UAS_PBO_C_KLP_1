@@ -1,6 +1,0 @@
-T|T001|2026-11-17T16:10:07.707498600|Kasir Satu|QRIS|94000.0|9400.0|103400.0|P001|1
-I|Makanan|M01|Nasi Goreng|20000.0|true|2
-I|Makanan|M03|Mie Goreng|18000.0|true|3
-T|T002|2026-11-17T16:12:52.224843300|Kasir Satu|Debit|76000.0|7600.0|83600.0|P001|1
-I|Makanan|M01|Nasi Goreng|20000.0|true|2
-I|Makanan|M03|Mie Goreng|18000.0|true|2

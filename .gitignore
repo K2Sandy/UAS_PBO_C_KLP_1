@@ -38,3 +38,7 @@ nbproject/
 # Sistem operasi
 .DS_Store
 Thumbs.db
+
+# Data yang dibuat otomatis oleh FileManager saat program dijalankan
+data/
+src/data/
