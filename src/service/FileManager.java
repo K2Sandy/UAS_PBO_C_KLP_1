@@ -41,15 +41,15 @@ public class FileManager {
 
             try (PrintWriter out = new PrintWriter(new FileWriter(FILE_MENU))) {
                 for (MenuItem m : DataStore.daftarMenu) {
-                    out.println(m.getKategori() + "|" + m.getId() + "|" + m.getNama()
-                            + "|" + m.getHarga() + "|" + m.getStok() + "|" + ekstraMenu(m));
+                    out.println(m.getKategori() + "|" + bersih(m.getId()) + "|" + bersih(m.getNama())
+                            + "|" + m.getHarga() + "|" + m.getStok() + "|" + bersih(ekstraMenu(m)));
                 }
             }
 
             try (PrintWriter out = new PrintWriter(new FileWriter(FILE_AKUN))) {
                 for (Akun a : DataStore.daftarAkun.values()) {
-                    out.println(a.getPeran() + "|" + a.getUsername() + "|"
-                            + a.getPassword() + "|" + a.getNamaLengkap());
+                    out.println(a.getPeran() + "|" + bersih(a.getUsername()) + "|"
+                            + bersih(a.getPassword()) + "|" + bersih(a.getNamaLengkap()));
                 }
             }
 
@@ -127,9 +127,9 @@ public class FileManager {
                         + "|" + p.getIdPesanan() + "|" + p.getNomorMeja());
                 for (ItemPesanan item : p.getDaftarItem()) {
                     MenuItem m = item.getMenu();
-                    out.println("I|" + m.getKategori() + "|" + m.getId()
+                    out.println("I|" + m.getKategori() + "|" + bersih(m.getId())
                             + "|" + bersih(m.getNama()) + "|" + m.getHarga()
-                            + "|" + ekstraMenu(m) + "|" + item.getJumlah());
+                            + "|" + bersih(ekstraMenu(m)) + "|" + item.getJumlah());
                 }
             }
         }
