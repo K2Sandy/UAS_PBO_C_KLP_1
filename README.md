@@ -1,4 +1,6 @@
-# KasirResto
+<p align="center">
+  <img src="assets/cover.svg" alt="KasirResto: aplikasi kasir restoran berbasis CLI dengan Java" width="100%">
+</p>
 
 Aplikasi kasir restoran berbasis CLI (Command Line Interface) menggunakan Java,
 dibuat untuk UAS Praktikum Pemrograman Berorientasi Objek (PBO) kelas C.
@@ -82,6 +84,7 @@ src/
 data/         dibuat otomatis saat program dijalankan (tidak di-commit)
 jalankan.bat  skrip compile dan jalankan untuk Windows
 jalankan.sh   skrip compile dan jalankan untuk Linux/macOS
+assets/       gambar untuk README (cover)
 ```
 
 ## Skenario Uji
