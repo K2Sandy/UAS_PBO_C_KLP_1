@@ -2,6 +2,10 @@ package service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import model.Transaksi;
 import util.ConsoleHelper;
 import util.StrukPrinter;
@@ -16,6 +20,10 @@ public class LaporanService {
     /** Format tanggal dan jam di tabel riwayat. */
     private static final DateTimeFormatter FORMAT_WAKTU =
             DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+
+    /** Format tanggal di judul laporan harian. */
+    private static final DateTimeFormatter FORMAT_TANGGAL =
+            DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
     /** Format satu baris tabel riwayat: id, waktu, kasir, metode, total. */
     private static final String FORMAT_BARIS = "%-6s %-16s %-14s %-6s %12s";
@@ -96,23 +104,72 @@ public class LaporanService {
     }
 
     /**
-     * Menampilkan laporan penjualan untuk hari ini:
-     * jumlah transaksi dan total pendapatan.
+     * Menampilkan laporan penjualan untuk hari ini: jumlah transaksi,
+     * subtotal, pajak, total pendapatan, lalu rinciannya per metode
+     * pembayaran dan per kasir.
      */
     public void laporanHarian() {
         LocalDate hariIni = LocalDate.now();
-        int jumlah = 0;
-        double totalPendapatan = 0;
-
+        List<Transaksi> hariIniSaja = new ArrayList<>();
         for (Transaksi t : DataStore.riwayat) {
             if (t.getWaktu().toLocalDate().equals(hariIni)) {
-                jumlah++;
-                totalPendapatan += t.getTotal();
+                hariIniSaja.add(t);
             }
         }
 
-        ConsoleHelper.cetakJudul("LAPORAN PENJUALAN HARI INI");
-        ConsoleHelper.cetak("Jumlah transaksi : " + jumlah);
-        ConsoleHelper.cetak("Total pendapatan : " + ConsoleHelper.formatRupiah(totalPendapatan));
+        ConsoleHelper.cetakJudul("LAPORAN PENJUALAN " + hariIni.format(FORMAT_TANGGAL));
+        if (hariIniSaja.isEmpty()) {
+            ConsoleHelper.cetak("Belum ada transaksi hari ini.");
+            return;
+        }
+
+        double subtotal = 0;
+        double pajak = 0;
+        double total = 0;
+        Map<String, Double> perMetode = new TreeMap<>();
+        Map<String, Double> perKasir = new TreeMap<>();
+        for (Transaksi t : hariIniSaja) {
+            subtotal += t.getSubtotal();
+            pajak += t.getPajak();
+            total += t.getTotal();
+            perMetode.merge(t.getMetodePembayaran(), t.getTotal(), Double::sum);
+            perKasir.merge(t.getNamaKasir(), t.getTotal(), Double::sum);
+        }
+
+        ConsoleHelper.cetak(baris("Jumlah transaksi", String.valueOf(hariIniSaja.size())));
+        ConsoleHelper.cetak(baris("Subtotal", ConsoleHelper.formatRupiah(subtotal)));
+        ConsoleHelper.cetak(baris("Pajak", ConsoleHelper.formatRupiah(pajak)));
+        ConsoleHelper.cetak(baris("Total pendapatan", ConsoleHelper.formatRupiah(total)));
+
+        cetakRincian("Per metode pembayaran", perMetode);
+        cetakRincian("Per kasir", perKasir);
+    }
+
+    /**
+     * Mencetak satu bagian rincian laporan, satu baris per kunci.
+     *
+     * @param judul   judul bagian, contoh: "Per kasir"
+     * @param rincian pasangan nama dan total rupiahnya
+     */
+    private void cetakRincian(String judul, Map<String, Double> rincian) {
+        ConsoleHelper.cetak("-".repeat(ConsoleHelper.LEBAR));
+        ConsoleHelper.cetak(judul + ":");
+        for (Map.Entry<String, Double> data : rincian.entrySet()) {
+            ConsoleHelper.cetak(baris("  " + ConsoleHelper.potong(data.getKey(), 24),
+                    ConsoleHelper.formatRupiah(data.getValue())));
+        }
+    }
+
+    /**
+     * Membuat satu baris dengan teks kiri dan teks kanan rata kanan
+     * pada lebar tampilan.
+     *
+     * @param kiri  teks di sisi kiri
+     * @param kanan teks di sisi kanan
+     * @return baris yang sudah diformat
+     */
+    private String baris(String kiri, String kanan) {
+        int spasi = Math.max(1, ConsoleHelper.LEBAR - kiri.length() - kanan.length());
+        return kiri + " ".repeat(spasi) + kanan;
     }
 }
