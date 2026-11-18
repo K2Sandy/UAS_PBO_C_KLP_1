@@ -108,6 +108,31 @@ Pekerjaan dibagi per pasangan. Pembagian di dalam pasangan diatur sendiri oleh k
 | 2 | M. Dzaky Syraj (250810701100051)<br>Nabil Al Fijar (250810701100031) | Fitur Kasir: pesanan, pembayaran, struk, riwayat kasir | service/PesananService.java, service/TransaksiService.java, payment/*, util/StrukPrinter.java |
 | 3 | Mirdha Aulia Zahra (2408107010115)<br>Putroe Zalfa (250810701100024) | Finalisasi: simpan ke file, perbaikan bug, Javadoc, PPT | service/FileManager.java dan seluruh kode |
 
+### Hasil per Pasangan
+
+Pasangan 1 (fitur Admin)
+
+- Tabel menu menampilkan keterangan (pedas / ukuran) dan harga yang benar-benar dibayar
+- Tambah, edit, dan hapus menu dengan validasi dan konfirmasi
+- Kelola kasir: tambah dengan validasi, hapus dengan konfirmasi, ganti password
+- Riwayat semua transaksi dengan rincian struk per ID transaksi
+- Laporan harian per metode bayar dan per kasir, menu terlaris, dan stok menipis
+
+Pasangan 2 (fitur Kasir)
+
+- Pesanan per nomor meja: stok dicek, menu yang sama digabung dalam satu baris
+- Nomor pesanan dan transaksi melanjutkan riwayat, tidak kembali ke 001
+- Pembayaran Tunai (boleh tulis 50.000, uang kurang ditanya ulang), QRIS, dan Debit
+- Stok berkurang setelah pembayaran berhasil, pajak dibulatkan ke rupiah
+- Struk lengkap, riwayat kasir, dan cetak ulang struk
+
+Pasangan 3 (finalisasi)
+
+- Simpan dan muat menu, akun, dan transaksi ke folder `data/`
+- Data tersimpan otomatis saat program berhenti, termasuk Ctrl+C
+- Baris data yang rusak dilewati tanpa menghilangkan data lain; akun Admin dibuat ulang jika hilang
+- Javadoc lengkap di semua class, skrip `jalankan.bat` / `jalankan.sh`, dan README
+
 ## Aturan Kerja Tim
 
 - Satu pasangan mengerjakan file miliknya sendiri. Jangan mengubah file pasangan lain tanpa bilang.
