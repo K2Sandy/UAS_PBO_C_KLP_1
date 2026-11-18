@@ -21,8 +21,8 @@ public class AkunService {
     }
 
     /**
-     * Menampilkan submenu kelola akun kasir:
-     * melihat daftar kasir, menambah kasir, dan menghapus kasir.
+     * Menampilkan submenu kelola akun kasir: melihat daftar kasir,
+     * menambah kasir, menghapus kasir, dan mengganti password kasir.
      */
     public void kelolaAkunKasir() {
         boolean berjalan = true;
@@ -32,14 +32,16 @@ public class AkunService {
             ConsoleHelper.cetak("1. Lihat Daftar Kasir");
             ConsoleHelper.cetak("2. Tambah Kasir");
             ConsoleHelper.cetak("3. Hapus Kasir");
+            ConsoleHelper.cetak("4. Ganti Password Kasir");
             ConsoleHelper.cetak("0. Kembali");
 
-            int pilihan = ConsoleHelper.bacaPilihan("Pilih: ", 0, 3);
+            int pilihan = ConsoleHelper.bacaPilihan("Pilih: ", 0, 4);
 
             switch (pilihan) {
                 case 1 -> tampilkanDaftarKasir();
                 case 2 -> tambahKasir();
                 case 3 -> hapusKasir();
+                case 4 -> gantiPasswordKasir();
                 case 0 -> berjalan = false;
                 default -> ConsoleHelper.cetak("Pilihan tidak dikenal.");
             }
@@ -193,6 +195,31 @@ public class AkunService {
             return null;
         }
         return kasir;
+    }
+
+    /**
+     * Mengganti password akun Kasir, misalnya saat kasir lupa password.
+     * Password baru diketik dua kali supaya tidak salah ketik.
+     */
+    private void gantiPasswordKasir() {
+        tampilkanDaftarKasir();
+        String username = ConsoleHelper.bacaTeks("Username kasir (Enter = batal): ");
+        if (username.isEmpty()) {
+            return;
+        }
+        Kasir kasir = cariKasir(username);
+        if (kasir == null) {
+            return;
+        }
+
+        String passwordBaru = bacaPasswordBaru("Password baru (minimal 4 karakter): ");
+        String ulangi = ConsoleHelper.bacaTeks("Ketik ulang password baru: ");
+        if (!ulangi.equals(passwordBaru)) {
+            ConsoleHelper.cetak("Password tidak sama. Password lama tetap dipakai.");
+            return;
+        }
+        kasir.setPassword(passwordBaru);
+        ConsoleHelper.cetak("Password " + kasir.getUsername() + " berhasil diganti.");
     }
 
     /**
