@@ -8,6 +8,10 @@ import util.ConsoleHelper;
  */
 public class Tunai implements Pembayaran {
 
+    /** Membuat metode pembayaran tunai. */
+    public Tunai() {
+    }
+
     /**
      * Mengambil nama metode pembayaran.
      *
@@ -19,26 +23,32 @@ public class Tunai implements Pembayaran {
     }
 
     /**
-     * Memproses pembayaran tunai.
+     * Memproses pembayaran tunai. Kasir memasukkan uang yang diterima
+     * (boleh pakai titik ribuan, contoh 50.000). Jika uang kurang,
+     * kasir diminta memasukkan ulang; ketik 0 untuk membatalkan.
      *
      * @param total jumlah yang harus dibayar pelanggan
-     * @return true jika uang yang diterima cukup, false jika tidak
+     * @return true jika uang yang diterima cukup, false jika dibatalkan
      */
-        @Override
+    @Override
     public boolean bayar(double total) {
         ConsoleHelper.cetakJudul("PEMBAYARAN TUNAI");
         ConsoleHelper.cetak("Total yang harus dibayar: " + ConsoleHelper.formatRupiah(total));
 
-        double uangDiterima = ConsoleHelper.bacaDesimal("Uang diterima: Rp");
-
-        if (uangDiterima < total) {
-            ConsoleHelper.cetak("Uang kurang " + ConsoleHelper.formatRupiah(total - uangDiterima)
-                    + ". Pembayaran dibatalkan.");
-            return false;
+        while (true) {
+            long uangDiterima = ConsoleHelper.bacaRupiah("Uang diterima (Rp, 0 = batal): ");
+            if (uangDiterima == 0) {
+                ConsoleHelper.cetak("Pembayaran tunai dibatalkan.");
+                return false;
+            }
+            if (uangDiterima < total) {
+                ConsoleHelper.cetak("Uang kurang " + ConsoleHelper.formatRupiah(total - uangDiterima)
+                        + ". Masukkan lagi jumlah uang yang diterima.");
+                continue;
+            }
+            ConsoleHelper.cetak("Kembalian: " + ConsoleHelper.formatRupiah(uangDiterima - total));
+            ConsoleHelper.cetak("Pembayaran tunai berhasil.");
+            return true;
         }
-
-        ConsoleHelper.cetak("Kembalian: " + ConsoleHelper.formatRupiah(uangDiterima - total));
-        ConsoleHelper.cetak("Pembayaran tunai berhasil.");
-        return true;
     }
 }

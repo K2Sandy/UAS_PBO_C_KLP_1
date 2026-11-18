@@ -8,6 +8,10 @@ import util.ConsoleHelper;
  */
 public class Debit implements Pembayaran {
 
+    /** Membuat metode pembayaran debit. */
+    public Debit() {
+    }
+
     /**
      * Mengambil nama metode pembayaran.
      *

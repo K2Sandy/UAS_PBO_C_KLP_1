@@ -8,6 +8,10 @@ import util.ConsoleHelper;
  */
 public class Qris implements Pembayaran {
 
+    /** Membuat metode pembayaran QRIS. */
+    public Qris() {
+    }
+
     /**
      * Mengambil nama metode pembayaran.
      *
