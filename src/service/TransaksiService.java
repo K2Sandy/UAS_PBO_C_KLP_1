@@ -1,6 +1,9 @@
 package service;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 import model.ItemPesanan;
 import model.Kasir;
@@ -24,6 +27,12 @@ public class TransaksiService {
 
     /** Label pajak untuk ringkasan dan struk, contoh: "Pajak (10%)". */
     public static final String LABEL_PAJAK = "Pajak (" + Math.round(TARIF_PAJAK * 100) + "%)";
+
+    /** Format tanggal dan jam di tabel riwayat kasir. */
+    private static final DateTimeFormatter FORMAT_WAKTU = DateTimeFormatter.ofPattern("dd-MM HH:mm");
+
+    /** Format satu baris tabel riwayat kasir: id, waktu, meja, metode, total. */
+    private static final String FORMAT_RIWAYAT = "%-5s %-11s %4s  %-6s %13s";
 
     /** Membuat layanan transaksi. */
     public TransaksiService() {
@@ -109,41 +118,78 @@ public class TransaksiService {
     }
 
     /**
-     * Menampilkan riwayat transaksi milik satu kasir saja.
+     * Menampilkan riwayat transaksi milik satu kasir saja, lengkap dengan
+     * jumlah dan total hari ini. Kasir juga bisa mencetak ulang struk
+     * transaksinya sendiri dengan mengetik id transaksi.
      *
      * @param kasir kasir yang riwayatnya ditampilkan
      */
     public void tampilkanRiwayatKasir(Kasir kasir) {
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
-        boolean adaData = false;
-        double totalPendapatan = 0;
+        ConsoleHelper.cetakJudul("RIWAYAT TRANSAKSI - " + kasir.getNamaLengkap());
 
+        List<Transaksi> milikKasir = new ArrayList<>();
         for (Transaksi t : DataStore.riwayat) {
-            if (!t.milikKasir(kasir)) {
-                continue;
+            if (t.milikKasir(kasir)) {
+                milikKasir.add(t);
             }
-            if (!adaData) {
-                ConsoleHelper.cetakJudul("RIWAYAT TRANSAKSI - " + kasir.getNamaLengkap());
-                System.out.printf("%-8s %-17s %-6s %-10s %12s%n",
-                        "ID", "Waktu", "Meja", "Metode", "Total");
-                System.out.println("-".repeat(57));
-                adaData = true;
-            }
-            System.out.printf("%-8s %-17s %-6d %-10s %12s%n",
-                    t.getIdTransaksi(),
-                    t.getWaktu().format(format),
-                    t.getPesanan().getNomorMeja(),
-                    t.getMetodePembayaran(),
-                    ConsoleHelper.formatRupiah(t.getTotal()));
-            totalPendapatan += t.getTotal();
         }
-
-        if (!adaData) {
+        if (milikKasir.isEmpty()) {
             ConsoleHelper.cetak("Belum ada transaksi.");
             return;
         }
-        System.out.println("-".repeat(57));
-        System.out.printf("%-43s %12s%n", "Total", ConsoleHelper.formatRupiah(totalPendapatan));
+
+        ConsoleHelper.cetak(String.format(FORMAT_RIWAYAT, "ID", "Waktu", "Meja", "Metode", "Total"));
+        ConsoleHelper.cetak("-".repeat(ConsoleHelper.LEBAR));
+        LocalDate hariIni = LocalDate.now();
+        double totalSemua = 0;
+        double totalHariIni = 0;
+        int jumlahHariIni = 0;
+        for (Transaksi t : milikKasir) {
+            ConsoleHelper.cetak(String.format(FORMAT_RIWAYAT,
+                    t.getIdTransaksi(),
+                    t.getWaktu().format(FORMAT_WAKTU),
+                    t.getPesanan().getNomorMeja(),
+                    t.getMetodePembayaran(),
+                    ConsoleHelper.formatRupiah(t.getTotal())));
+            totalSemua += t.getTotal();
+            if (t.getWaktu().toLocalDate().equals(hariIni)) {
+                jumlahHariIni++;
+                totalHariIni += t.getTotal();
+            }
+        }
+        ConsoleHelper.cetak("-".repeat(ConsoleHelper.LEBAR));
+        ConsoleHelper.cetak(ConsoleHelper.baris("Hari ini (" + jumlahHariIni + " transaksi)",
+                ConsoleHelper.formatRupiah(totalHariIni)));
+        ConsoleHelper.cetak(ConsoleHelper.baris("Semua (" + milikKasir.size() + " transaksi)",
+                ConsoleHelper.formatRupiah(totalSemua)));
+
+        cetakUlangStruk(milikKasir);
+    }
+
+    /**
+     * Menanyakan id transaksi lalu mencetak ulang struknya, hanya untuk
+     * transaksi di daftar yang diberikan, sampai kasir menekan Enter.
+     *
+     * @param daftar transaksi yang boleh dicetak ulang
+     */
+    private void cetakUlangStruk(List<Transaksi> daftar) {
+        while (true) {
+            String id = ConsoleHelper.bacaTeks("\nID transaksi untuk cetak ulang struk (Enter = kembali): ");
+            if (id.isEmpty()) {
+                return;
+            }
+            Transaksi dipilih = null;
+            for (Transaksi t : daftar) {
+                if (t.getIdTransaksi().equalsIgnoreCase(id)) {
+                    dipilih = t;
+                }
+            }
+            if (dipilih == null) {
+                ConsoleHelper.cetak("Transaksi " + id + " tidak ada di riwayat Anda.");
+            } else {
+                StrukPrinter.cetak(dipilih);
+            }
+        }
     }
 
     /**
