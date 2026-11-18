@@ -69,7 +69,7 @@ public class TransaksiService {
             // 3. Pembayaran berhasil: buat transaksi, simpan, cetak struk
             if (dipilih.bayar(total)) {
                 Transaksi transaksi = new Transaksi();
-                transaksi.setIdTransaksi(String.format("T%03d", DataStore.riwayat.size() + 1));
+                transaksi.setIdTransaksi(DataStore.kodeBerikutnya("T", false));
                 transaksi.setPesanan(pesanan);
                 transaksi.setNamaKasir(kasir.getNamaLengkap());
                 transaksi.setMetodePembayaran(dipilih.getNamaMetode());

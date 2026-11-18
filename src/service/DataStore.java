@@ -52,6 +52,32 @@ public class DataStore {
     }
 
     /**
+     * Membuat kode berikutnya dari angka terbesar yang sudah dipakai di
+     * riwayat, contoh: jika riwayat sudah punya T001 sampai T007, kode
+     * transaksi berikutnya T008. Karena dihitung dari riwayat yang dimuat
+     * dari file, nomor tidak kembali ke 001 saat program dibuka lagi.
+     *
+     * @param awalan       huruf awal kode: "T" untuk transaksi, "P" untuk pesanan
+     * @param pakaiPesanan true untuk menghitung dari id pesanan,
+     *                     false untuk menghitung dari id transaksi
+     * @return kode baru, contoh: "T008"
+     */
+    public static String kodeBerikutnya(String awalan, boolean pakaiPesanan) {
+        int terbesar = 0;
+        for (Transaksi t : riwayat) {
+            String kode = pakaiPesanan ? t.getPesanan().getIdPesanan() : t.getIdTransaksi();
+            if (kode != null && kode.startsWith(awalan)) {
+                try {
+                    terbesar = Math.max(terbesar, Integer.parseInt(kode.substring(awalan.length())));
+                } catch (NumberFormatException e) {
+                    // kode tidak berformat angka: abaikan
+                }
+            }
+        }
+        return String.format("%s%03d", awalan, terbesar + 1);
+    }
+
+    /**
      * Mengisi data awal agar program bisa langsung dicoba:
      * satu akun Admin, satu akun Kasir, dan beberapa menu contoh.
      */

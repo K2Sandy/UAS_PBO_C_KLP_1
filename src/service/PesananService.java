@@ -4,7 +4,6 @@ import model.ItemPesanan;
 import model.Kasir;
 import model.MenuItem;
 import model.Pesanan;
-import model.Transaksi;
 import util.ConsoleHelper;
 import util.StokHabisException;
 
@@ -13,25 +12,8 @@ import util.StokHabisException;
  */
 public class PesananService {
 
-    /**
-     * Membuat kode pesanan berikutnya berdasarkan kode terbesar di riwayat,
-     * sehingga kode tidak kembali ke P001 setelah program dijalankan ulang.
-     *
-     * @return kode pesanan baru, contoh: "P003"
-     */
-    private String buatIdPesanan() {
-        int terbesar = 0;
-        for (Transaksi t : DataStore.riwayat) {
-            String id = t.getPesanan().getIdPesanan();
-            if (id != null && id.length() > 1 && id.charAt(0) == 'P') {
-                try {
-                    terbesar = Math.max(terbesar, Integer.parseInt(id.substring(1)));
-                } catch (NumberFormatException e) {
-                    // kode tidak berformat Pxxx: abaikan
-                }
-            }
-        }
-        return String.format("P%03d", terbesar + 1);
+    /** Membuat layanan pesanan. */
+    public PesananService() {
     }
 
     /**
@@ -46,12 +28,12 @@ public class PesananService {
         if (meja <= 0) {
             return null;
         }
-        Pesanan pesanan = new Pesanan(buatIdPesanan(), meja);
+        Pesanan pesanan = new Pesanan(DataStore.kodeBerikutnya("P", true), meja);
 
         while (true) {
             for (MenuItem m : DataStore.daftarMenu) {
                 ConsoleHelper.cetak(m.getId() + " - " + m.getNama() + " - "
-                        + ConsoleHelper.formatRupiah(m.hitungHarga(1))
+                        + ConsoleHelper.formatRupiah(m.getHarga())
                         + " (stok " + m.getStok() + ")");
             }
 
@@ -72,14 +54,10 @@ public class PesananService {
             }
 
             int jumlah = ConsoleHelper.bacaAngka("Jumlah: ");
-            if (jumlah <= 0) {
-                ConsoleHelper.cetak("Jumlah harus lebih dari 0.");
-                continue;
-            }
             try {
-                if (jumlah > menu.getStok()) {
-                    throw new StokHabisException("Stok " + menu.getNama()
-                            + " kurang (sisa " + menu.getStok() + ").");
+                if (jumlah <= 0 || jumlah > menu.getStok()) {
+                    throw new StokHabisException("Jumlah tidak valid atau stok "
+                            + menu.getNama() + " kurang (sisa " + menu.getStok() + ").");
                 }
                 menu.setStok(menu.getStok() - jumlah);
                 pesanan.tambahItem(new ItemPesanan(menu, jumlah));
