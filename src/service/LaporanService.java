@@ -3,9 +3,12 @@ package service;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import model.ItemPesanan;
+import model.MenuItem;
 import model.Transaksi;
 import util.ConsoleHelper;
 import util.StrukPrinter;
@@ -24,6 +27,12 @@ public class LaporanService {
     /** Format tanggal di judul laporan harian. */
     private static final DateTimeFormatter FORMAT_TANGGAL =
             DateTimeFormatter.ofPattern("dd-MM-yyyy");
+
+    /** Banyak menu yang ditampilkan di daftar menu terlaris. */
+    private static final int JUMLAH_TERLARIS = 5;
+
+    /** Stok sama dengan atau di bawah angka ini dianggap menipis. */
+    private static final int BATAS_STOK_MENIPIS = 5;
 
     /** Format satu baris tabel riwayat: id, waktu, kasir, metode, total. */
     private static final String FORMAT_BARIS = "%-6s %-16s %-14s %-6s %12s";
@@ -105,8 +114,9 @@ public class LaporanService {
 
     /**
      * Menampilkan laporan penjualan untuk hari ini: jumlah transaksi,
-     * subtotal, pajak, total pendapatan, lalu rinciannya per metode
-     * pembayaran dan per kasir.
+     * subtotal, pajak, total pendapatan, rinciannya per metode
+     * pembayaran dan per kasir, menu terlaris, dan menu yang stoknya
+     * hampir habis.
      */
     public void laporanHarian() {
         LocalDate hariIni = LocalDate.now();
@@ -143,6 +153,65 @@ public class LaporanService {
 
         cetakRincian("Per metode pembayaran", perMetode);
         cetakRincian("Per kasir", perKasir);
+        cetakMenuTerlaris(hariIniSaja);
+        cetakStokMenipis();
+    }
+
+    /**
+     * Mencetak paling banyak 5 menu yang paling banyak terjual
+     * dari daftar transaksi yang diberikan.
+     *
+     * @param daftarTransaksi transaksi yang dihitung
+     */
+    private void cetakMenuTerlaris(List<Transaksi> daftarTransaksi) {
+        // dikelompokkan per id menu (bukan nama) supaya dua menu bernama sama
+        // tidak tergabung; nama yang ditampilkan adalah nama terakhir
+        Map<String, Integer> terjual = new HashMap<>();
+        Map<String, String> namaMenu = new HashMap<>();
+        for (Transaksi t : daftarTransaksi) {
+            for (ItemPesanan item : t.getPesanan().getDaftarItem()) {
+                String id = item.getMenu().getId().toUpperCase();
+                terjual.merge(id, item.getJumlah(), Integer::sum);
+                namaMenu.put(id, item.getMenu().getNama());
+            }
+        }
+
+        List<Map.Entry<String, Integer>> urut = new ArrayList<>(terjual.entrySet());
+        urut.sort((a, b) -> b.getValue() - a.getValue());
+
+        ConsoleHelper.cetak("-".repeat(ConsoleHelper.LEBAR));
+        ConsoleHelper.cetak("Menu terlaris:");
+        int nomor = 1;
+        for (Map.Entry<String, Integer> data : urut) {
+            if (nomor > JUMLAH_TERLARIS) {
+                break;
+            }
+            String label = data.getKey() + " " + namaMenu.get(data.getKey());
+            ConsoleHelper.cetak(baris("  " + nomor + ". " + ConsoleHelper.potong(label, 26),
+                    data.getValue() + " porsi"));
+            nomor++;
+        }
+    }
+
+    /**
+     * Mencetak menu yang stoknya tinggal sedikit, sebagai pengingat
+     * bagi Admin untuk menambah stok.
+     */
+    private void cetakStokMenipis() {
+        ConsoleHelper.cetak("-".repeat(ConsoleHelper.LEBAR));
+        ConsoleHelper.cetak("Stok menipis (<= " + BATAS_STOK_MENIPIS + "):");
+        boolean ada = false;
+        for (MenuItem menu : DataStore.daftarMenu) {
+            if (menu.getStok() <= BATAS_STOK_MENIPIS) {
+                String sisa = menu.getStok() == 0 ? "HABIS" : "sisa " + menu.getStok();
+                ConsoleHelper.cetak(baris("  " + menu.getId() + " "
+                        + ConsoleHelper.potong(menu.getNama(), 22), sisa));
+                ada = true;
+            }
+        }
+        if (!ada) {
+            ConsoleHelper.cetak("  Semua stok aman.");
+        }
     }
 
     /**
