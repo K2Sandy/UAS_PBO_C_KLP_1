@@ -2,8 +2,8 @@ package service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-
 import model.Transaksi;
+import util.ConsoleHelper;
 
 /**
  * Layanan laporan untuk Admin: riwayat seluruh transaksi
@@ -12,31 +12,48 @@ import model.Transaksi;
  */
 public class LaporanService {
 
+    /** Format tanggal dan jam di tabel riwayat. */
+    private static final DateTimeFormatter FORMAT_WAKTU =
+            DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+
+    /** Format satu baris tabel riwayat: id, waktu, kasir, metode, total. */
+    private static final String FORMAT_BARIS = "%-6s %-16s %-14s %-6s %12s";
+
+    /** Panjang satu baris tabel riwayat. */
+    private static final int LEBAR_TABEL = 58;
+
+    /** Membuat layanan laporan. */
+    public LaporanService() {
+    }
+
     /**
      * Menampilkan semua transaksi yang pernah terjadi:
-     * id, waktu, kasir, metode pembayaran, dan total.
+     * id, waktu, kasir, metode pembayaran, dan total,
+     * lalu jumlah transaksi dan total pendapatan keseluruhan.
      */
     public void tampilkanSemuaRiwayat() {
+        ConsoleHelper.cetakJudul("RIWAYAT SEMUA TRANSAKSI");
         if (DataStore.riwayat.isEmpty()) {
-            System.out.println("Belum ada transaksi.");
+            ConsoleHelper.cetak("Belum ada transaksi.");
             return;
         }
 
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
-
-        System.out.println("=== RIWAYAT SEMUA TRANSAKSI ===");
-        System.out.printf("%-8s %-17s %-12s %-10s %12s%n",
-                "ID", "Waktu", "Kasir", "Metode", "Total");
-        System.out.println("-------------------------------------------------------------");
-
-         for (Transaksi t : DataStore.riwayat) {
-            System.out.printf("%-8s %-17s %-12s %-10s %,12.0f%n",
+        ConsoleHelper.cetak(String.format(FORMAT_BARIS, "ID", "Waktu", "Kasir", "Metode", "Total"));
+        ConsoleHelper.cetak("-".repeat(LEBAR_TABEL));
+        double totalSemua = 0;
+        for (Transaksi t : DataStore.riwayat) {
+            ConsoleHelper.cetak(String.format(FORMAT_BARIS,
                     t.getIdTransaksi(),
-                    t.getWaktu().format(format),
-                    t.getNamaKasir(),
+                    t.getWaktu().format(FORMAT_WAKTU),
+                    ConsoleHelper.potong(t.getNamaKasir(), 14),
                     t.getMetodePembayaran(),
-                    t.getTotal());
+                    ConsoleHelper.formatRupiah(t.getTotal())));
+            totalSemua += t.getTotal();
         }
+        ConsoleHelper.cetak("-".repeat(LEBAR_TABEL));
+        ConsoleHelper.cetak(String.format("%-45s %12s",
+                DataStore.riwayat.size() + " transaksi, total pendapatan",
+                ConsoleHelper.formatRupiah(totalSemua)));
     }
 
     /**
@@ -55,8 +72,8 @@ public class LaporanService {
             }
         }
 
-        System.out.println("=== LAPORAN PENJUALAN HARI INI ===");
-        System.out.println("Jumlah transaksi : " + jumlah);
-        System.out.printf("Total pendapatan : Rp %,.0f%n", totalPendapatan);
+        ConsoleHelper.cetakJudul("LAPORAN PENJUALAN HARI INI");
+        ConsoleHelper.cetak("Jumlah transaksi : " + jumlah);
+        ConsoleHelper.cetak("Total pendapatan : " + ConsoleHelper.formatRupiah(totalPendapatan));
     }
 }
