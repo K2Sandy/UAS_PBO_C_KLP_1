@@ -63,6 +63,53 @@ Program menyimpan data ke folder `data/` di folder tempat program dijalankan:
 - Hapus folder `data/` untuk kembali ke data awal.
 - Folder `data/` tidak ikut di-commit (ada di `.gitignore`).
 
+### Format File Data
+
+Setiap baris berisi satu data, kolomnya dipisah tanda `|`.
+
+`data/menu.txt`
+
+```
+Makanan|M01|Nasi Goreng|20000.0|18|true
+Minuman|N02|Jus Jeruk|12000.0|19|Large
+```
+
+| Kolom | Isi |
+|-------|-----|
+| 1 | kategori: `Makanan` atau `Minuman` |
+| 2 | ID menu |
+| 3 | nama menu |
+| 4 | harga dasar (tanpa tambahan Large) |
+| 5 | stok |
+| 6 | Makanan: pedas `true`/`false`; Minuman: ukuran `Regular`/`Large` |
+
+`data/akun.txt`
+
+```
+Admin|admin|admin123|Admin Resto
+Kasir|kasir|kasir123|Kasir Satu
+```
+
+Kolomnya: peran (`Admin`/`Kasir`), username, password, nama lengkap.
+
+`data/transaksi.txt`
+
+Setiap transaksi terdiri dari satu baris `T`, diikuti satu baris `I` untuk setiap item pesanannya.
+
+```
+T|T001|2026-11-18T23:59:25|Kasir Satu|Tunai|54000.0|5400.0|59400.0|P001|5|kasir
+I|Makanan|M01|Nasi Goreng|20000.0|true|2
+I|Minuman|N02|Jus Jeruk|12000.0|Large|1
+```
+
+| Baris | Kolom |
+|-------|-------|
+| `T` | ID transaksi, waktu, nama kasir, metode bayar, subtotal, pajak, total, ID pesanan, nomor meja, username kasir |
+| `I` | kategori, ID menu, nama menu, harga dasar, pedas/ukuran, jumlah |
+
+Item transaksi disimpan sebagai salinan, jadi riwayat tidak berubah walaupun menu diedit atau dihapus.
+Baris yang rusak dilewati saat program dibuka, dan data lain tetap terbaca.
+
 ## Akun untuk Uji Coba
 
 | Peran | Username | Password |
@@ -202,6 +249,34 @@ Pasangan 3 (finalisasi)
 - Selalu pakai `ConsoleHelper` untuk input dan tampilan (jangan membuat `Scanner` baru).
 - Setiap pasangan bekerja di branch sendiri, lalu `git pull` sebelum `git push`.
 - Pesan commit memakai awalan: `feat:`, `fix:`, `docs:`, atau `refactor:`.
+
+## Troubleshooting
+
+`javac` atau `java` tidak dikenali
+
+- Pastikan JDK 17 atau lebih baru sudah terpasang: `javac -version`.
+- Di Windows, tambahkan folder `bin` JDK (misalnya `C:\Program Files\Java\jdk-17\bin`) ke PATH, lalu buka ulang terminal.
+
+Data ingin dikembalikan ke awal
+
+- Tutup program, hapus folder `data/`, lalu jalankan lagi. Menu dan akun bawaan akan dipakai.
+
+Tidak bisa login karena akun Admin hilang
+
+- Program otomatis membuat ulang akun `admin` / `admin123` jika tidak ada akun Admin di `data/akun.txt`.
+
+Tabel atau struk terlihat berantakan
+
+- Perlebar jendela terminal (minimal sekitar 65 karakter) dan gunakan font monospace.
+
+`git pull` gagal: `refusing to merge unrelated histories`
+
+- Simpan dulu perubahan yang belum di-commit, lalu samakan dengan GitHub:
+
+```
+git fetch origin main
+git reset --hard origin/main
+```
 
 ## Lisensi
 
