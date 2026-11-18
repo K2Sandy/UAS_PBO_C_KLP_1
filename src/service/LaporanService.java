@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import model.Transaksi;
 import util.ConsoleHelper;
+import util.StrukPrinter;
 
 /**
  * Layanan laporan untuk Admin: riwayat seluruh transaksi
@@ -30,6 +31,8 @@ public class LaporanService {
      * Menampilkan semua transaksi yang pernah terjadi:
      * id, waktu, kasir, metode pembayaran, dan total,
      * lalu jumlah transaksi dan total pendapatan keseluruhan.
+     * Setelah itu Admin bisa mengetik id transaksi untuk melihat
+     * rinciannya dalam bentuk struk.
      */
     public void tampilkanSemuaRiwayat() {
         ConsoleHelper.cetakJudul("RIWAYAT SEMUA TRANSAKSI");
@@ -54,6 +57,42 @@ public class LaporanService {
         ConsoleHelper.cetak(String.format("%-45s %12s",
                 DataStore.riwayat.size() + " transaksi, total pendapatan",
                 ConsoleHelper.formatRupiah(totalSemua)));
+
+        lihatDetailTransaksi();
+    }
+
+    /**
+     * Menanyakan id transaksi lalu mencetak ulang struknya lewat
+     * StrukPrinter, sampai Admin menekan Enter tanpa mengisi apa-apa.
+     */
+    private void lihatDetailTransaksi() {
+        while (true) {
+            String id = ConsoleHelper.bacaTeks("\nID transaksi untuk lihat detail (Enter = kembali): ");
+            if (id.isEmpty()) {
+                return;
+            }
+            Transaksi transaksi = cariTransaksi(id);
+            if (transaksi == null) {
+                ConsoleHelper.cetak("Transaksi " + id + " tidak ditemukan.");
+            } else {
+                StrukPrinter.cetak(transaksi);
+            }
+        }
+    }
+
+    /**
+     * Mencari transaksi di riwayat berdasarkan id (huruf besar/kecil sama).
+     *
+     * @param id id transaksi, contoh: "T001" atau "t001"
+     * @return transaksi yang cocok, atau null jika tidak ada
+     */
+    private Transaksi cariTransaksi(String id) {
+        for (Transaksi t : DataStore.riwayat) {
+            if (t.getIdTransaksi().equalsIgnoreCase(id.trim())) {
+                return t;
+            }
+        }
+        return null;
     }
 
     /**
