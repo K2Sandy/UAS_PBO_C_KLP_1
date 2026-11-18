@@ -4,6 +4,7 @@ import java.time.format.DateTimeFormatter;
 
 import model.ItemPesanan;
 import model.Kasir;
+import model.MenuItem;
 import model.Pesanan;
 import model.Transaksi;
 import payment.Debit;
@@ -68,6 +69,7 @@ public class TransaksiService {
         
             // 3. Pembayaran berhasil: buat transaksi, simpan, cetak struk
             if (dipilih.bayar(total)) {
+                kurangiStok(pesanan);
                 Transaksi transaksi = new Transaksi();
                 transaksi.setIdTransaksi(DataStore.kodeBerikutnya("T", false));
                 transaksi.setPesanan(pesanan);
@@ -134,15 +136,25 @@ public class TransaksiService {
     }
 
     /**
-     * Membatalkan pesanan yang tidak jadi dibayar dan mengembalikan stok
-     * menu yang sebelumnya sudah dikurangi saat pesanan dibuat.
+     * Mengurangi stok setiap menu di pesanan. Dipanggil hanya setelah
+     * pembayaran berhasil.
+     *
+     * @param pesanan pesanan yang sudah dibayar
+     */
+    private void kurangiStok(Pesanan pesanan) {
+        for (ItemPesanan item : pesanan.getDaftarItem()) {
+            MenuItem menu = item.getMenu();
+            menu.setStok(Math.max(0, menu.getStok() - item.getJumlah()));
+        }
+    }
+
+    /**
+     * Membatalkan pesanan yang tidak jadi dibayar. Stok tidak perlu
+     * dikembalikan karena stok baru dikurangi setelah pembayaran berhasil.
      *
      * @param pesanan pesanan yang dibatalkan
      */
     private void batalkanPesanan(Pesanan pesanan) {
-        for (ItemPesanan item : pesanan.getDaftarItem()) {
-            item.getMenu().setStok(item.getMenu().getStok() + item.getJumlah());
-        }
-        ConsoleHelper.cetak("Pesanan dibatalkan. Stok menu dikembalikan.");
+        ConsoleHelper.cetak("Pesanan " + pesanan.getIdPesanan() + " dibatalkan. Stok tidak berubah.");
     }
 }

@@ -9,6 +9,10 @@ import util.StokHabisException;
 
 /**
  * Layanan pembuatan pesanan oleh Kasir.
+ * Saat pesanan dibuat stok hanya diperiksa, belum dikurangi. Stok baru
+ * dikurangi oleh TransaksiService setelah pembayaran berhasil, jadi
+ * pesanan yang batal atau program yang tertutup di tengah jalan tidak
+ * membuat stok hilang.
  */
 public class PesananService {
 
@@ -51,7 +55,8 @@ public class PesananService {
                 ConsoleHelper.cetak("Menu dengan ID " + id + " tidak ditemukan.");
                 continue;
             }
-            if (menu.getStok() == 0) {
+            int sisa = menu.getStok() - jumlahDiPesanan(pesanan, menu);
+            if (sisa <= 0) {
                 ConsoleHelper.cetak("Stok " + menu.getNama() + " habis.");
                 continue;
             }
@@ -62,11 +67,10 @@ public class PesananService {
                     ConsoleHelper.cetak("Jumlah harus lebih dari 0.");
                     continue;
                 }
-                if (jumlah > menu.getStok()) {
+                if (jumlah > sisa) {
                     throw new StokHabisException("Stok " + menu.getNama() + " tidak cukup (sisa "
-                            + menu.getStok() + ").");
+                            + sisa + ").");
                 }
-                menu.setStok(menu.getStok() - jumlah);
                 tambahAtauGabung(pesanan, menu, jumlah);
                 ConsoleHelper.cetak("+ " + menu.getNama() + " x" + jumlah
                         + "  (isi pesanan: " + pesanan.getDaftarItem().size() + " menu, subtotal "
@@ -96,6 +100,23 @@ public class PesananService {
             }
             ConsoleHelper.cetak("Nomor meja tidak boleh negatif.");
         }
+    }
+
+    /**
+     * Menghitung berapa porsi sebuah menu yang sudah masuk ke pesanan ini,
+     * supaya total yang dipesan tidak melebihi stok.
+     *
+     * @param pesanan pesanan yang sedang dibuat
+     * @param menu    menu yang diperiksa
+     * @return jumlah porsi menu tersebut di pesanan (0 jika belum ada)
+     */
+    private int jumlahDiPesanan(Pesanan pesanan, MenuItem menu) {
+        for (ItemPesanan item : pesanan.getDaftarItem()) {
+            if (item.getMenu() == menu) {
+                return item.getJumlah();
+            }
+        }
+        return 0;
     }
 
     /**
