@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 import model.Akun;
 import model.Kasir;
+import model.Transaksi;
 import util.ConsoleHelper;
 
 /**
@@ -136,6 +137,13 @@ public class AkunService {
         }
         if (DataStore.daftarAkun.containsKey(username)) {
             return "Username sudah digunakan. Gunakan username lain.";
+        }
+        // username kasir yang sudah dihapus tidak boleh dipakai lagi,
+        // supaya kasir baru tidak mewarisi riwayat transaksi kasir lama
+        for (Transaksi t : DataStore.riwayat) {
+            if (username.equals(t.getUsernameKasir())) {
+                return "Username ini pernah dipakai kasir lain dan masih ada di riwayat. Pilih username lain.";
+            }
         }
         return null;
     }

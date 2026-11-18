@@ -228,7 +228,8 @@ public class FileManager {
                 out.println("T|" + t.getIdTransaksi() + "|" + t.getWaktu()
                         + "|" + bersih(t.getNamaKasir()) + "|" + t.getMetodePembayaran()
                         + "|" + t.getSubtotal() + "|" + t.getPajak() + "|" + t.getTotal()
-                        + "|" + p.getIdPesanan() + "|" + p.getNomorMeja());
+                        + "|" + p.getIdPesanan() + "|" + p.getNomorMeja()
+                        + "|" + bersih(t.getUsernameKasir()));
                 for (ItemPesanan item : p.getDaftarItem()) {
                     MenuItem m = item.getMenu();
                     out.println("I|" + m.getKategori() + "|" + bersih(m.getId())
@@ -266,7 +267,12 @@ public class FileManager {
                         t.setTotal(Double.parseDouble(f[7]));
                         pesananAktif = new Pesanan(f[8], Integer.parseInt(f[9]));
                         t.setPesanan(pesananAktif);
+                        // kolom ke-11 (username kasir) belum ada di data lama
+                        t.setUsernameKasir(f.length >= 11 ? f[10] : "");
                         DataStore.riwayat.add(t);
+                    } else if (f[0].equals("T")) {
+                        // baris transaksi kurang kolom: item di bawahnya jangan ditempel ke transaksi lain
+                        pesananAktif = null;
                     } else if (f[0].equals("I") && f.length >= 7 && pesananAktif != null) {
                         double harga = Double.parseDouble(f[4]);
                         MenuItem menu = f[1].equals("Makanan")

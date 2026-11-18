@@ -168,6 +168,19 @@ public class ConsoleHelper {
     }
 
     /**
+     * Membuat satu baris dengan teks kiri dan teks kanan yang rata kanan
+     * pada lebar tampilan, contoh: "Subtotal            Rp40.000".
+     *
+     * @param kiri  teks di sisi kiri
+     * @param kanan teks di sisi kanan
+     * @return baris yang sudah diformat selebar LEBAR
+     */
+    public static String baris(String kiri, String kanan) {
+        int spasi = Math.max(1, LEBAR - kiri.length() - kanan.length());
+        return kiri + " ".repeat(spasi) + kanan;
+    }
+
+    /**
      * Memotong teks yang terlalu panjang supaya kolom tabel tetap lurus,
      * contoh: potong("Nasi Goreng Spesial Telur", 15) menjadi "Nasi Goreng ...".
      *

@@ -16,6 +16,8 @@ public class Transaksi {
     private Pesanan pesanan;
     /** Nama lengkap kasir yang memproses transaksi. */
     private String namaKasir;
+    /** Username kasir yang memproses transaksi (unik, dipakai untuk riwayat kasir). */
+    private String usernameKasir;
     /** Nama metode pembayaran. */
     private String metodePembayaran;
     /** Total harga item sebelum pajak. */
@@ -103,6 +105,39 @@ public class Transaksi {
      */
     public void setNamaKasir(String namaKasir) {
         this.namaKasir = namaKasir;
+    }
+
+    /**
+     * Mengambil username kasir yang memproses transaksi.
+     *
+     * @return username kasir, atau teks kosong untuk data lama
+     */
+    public String getUsernameKasir() {
+        return usernameKasir;
+    }
+
+    /**
+     * Mengubah username kasir yang memproses transaksi.
+     *
+     * @param usernameKasir username kasir
+     */
+    public void setUsernameKasir(String usernameKasir) {
+        this.usernameKasir = usernameKasir;
+    }
+
+    /**
+     * Memeriksa apakah transaksi ini dibuat oleh kasir tertentu.
+     * Dicocokkan lewat username (unik). Untuk data lama yang belum
+     * menyimpan username, dicocokkan lewat nama lengkap.
+     *
+     * @param kasir kasir yang diperiksa
+     * @return true jika transaksi ini milik kasir tersebut
+     */
+    public boolean milikKasir(Kasir kasir) {
+        if (usernameKasir != null && !usernameKasir.isBlank()) {
+            return usernameKasir.equals(kasir.getUsername());
+        }
+        return kasir.getNamaLengkap().equals(namaKasir);
     }
 
     /**

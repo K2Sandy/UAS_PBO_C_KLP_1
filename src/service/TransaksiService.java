@@ -19,8 +19,15 @@ import util.StrukPrinter;
  */
 public class TransaksiService {
 
-    /** Tarif pajak 10 persen. */
-    private static final double TARIF_PAJAK = 0.10;
+    /** Tarif pajak 10 persen. Dipakai juga oleh StrukPrinter. */
+    public static final double TARIF_PAJAK = 0.10;
+
+    /** Label pajak untuk ringkasan dan struk, contoh: "Pajak (10%)". */
+    public static final String LABEL_PAJAK = "Pajak (" + Math.round(TARIF_PAJAK * 100) + "%)";
+
+    /** Membuat layanan transaksi. */
+    public TransaksiService() {
+    }
 
     /**
      * Memproses pembayaran sebuah pesanan sampai struk tercetak.
@@ -31,22 +38,24 @@ public class TransaksiService {
     public void prosesPembayaran(Pesanan pesanan, Kasir kasir) {
         // 1. Hitung subtotal, pajak, dan total
         double subtotal = pesanan.hitungSubtotal();
-        double pajak = subtotal * TARIF_PAJAK;
+        // pajak dibulatkan ke rupiah terdekat supaya total tidak berkoma
+        double pajak = Math.round(subtotal * TARIF_PAJAK);
         double total = subtotal + pajak;
 
         // 2. Tampilkan ringkasan pesanan
         ConsoleHelper.cetakJudul("RINGKASAN PESANAN " + pesanan.getIdPesanan()
                 + " (Meja " + pesanan.getNomorMeja() + ")");
         for (ItemPesanan item : pesanan.getDaftarItem()) {
-            ConsoleHelper.cetak(String.format("%-20s %3d x %12s",
-                    item.getMenu().getNama(),
-                    item.getJumlah(),
+            MenuItem menu = item.getMenu();
+            ConsoleHelper.cetak(menu.getNama() + " (" + menu.getKeterangan() + ")");
+            ConsoleHelper.cetak(ConsoleHelper.baris(
+                    "  " + item.getJumlah() + " x " + ConsoleHelper.formatRupiah(menu.hitungHarga(1)),
                     ConsoleHelper.formatRupiah(item.getSubtotal())));
         }
-        ConsoleHelper.cetak("-".repeat(44));
-        ConsoleHelper.cetak(String.format("%-20s %23s", "Subtotal", ConsoleHelper.formatRupiah(subtotal)));
-        ConsoleHelper.cetak(String.format("%-20s %23s", "Pajak (10%)", ConsoleHelper.formatRupiah(pajak)));
-        ConsoleHelper.cetak(String.format("%-20s %23s", "TOTAL", ConsoleHelper.formatRupiah(total)));
+        ConsoleHelper.cetak("-".repeat(ConsoleHelper.LEBAR));
+        ConsoleHelper.cetak(ConsoleHelper.baris("Subtotal", ConsoleHelper.formatRupiah(subtotal)));
+        ConsoleHelper.cetak(ConsoleHelper.baris(LABEL_PAJAK, ConsoleHelper.formatRupiah(pajak)));
+        ConsoleHelper.cetak(ConsoleHelper.baris("TOTAL", ConsoleHelper.formatRupiah(total)));
 
         // Pilihan metode pembayaran (polymorphism lewat interface Pembayaran)
         Pembayaran[] metode = { new Tunai(), new Qris(), new Debit() };
@@ -66,7 +75,7 @@ public class TransaksiService {
             }
 
             Pembayaran dipilih = metode[pilihan - 1];
-        
+
             // 3. Pembayaran berhasil: buat transaksi, simpan, cetak struk
             if (dipilih.bayar(total)) {
                 kurangiStok(pesanan);
@@ -75,6 +84,7 @@ public class TransaksiService {
                 transaksi.setIdTransaksi(DataStore.kodeBerikutnya("T", false));
                 transaksi.setPesanan(pesanan);
                 transaksi.setNamaKasir(kasir.getNamaLengkap());
+                transaksi.setUsernameKasir(kasir.getUsername());
                 transaksi.setMetodePembayaran(dipilih.getNamaMetode());
                 transaksi.setSubtotal(subtotal);
                 transaksi.setPajak(pajak);
@@ -109,7 +119,7 @@ public class TransaksiService {
         double totalPendapatan = 0;
 
         for (Transaksi t : DataStore.riwayat) {
-            if (!t.getNamaKasir().equals(kasir.getNamaLengkap())) {
+            if (!t.milikKasir(kasir)) {
                 continue;
             }
             if (!adaData) {
