@@ -70,6 +70,68 @@ Program menyimpan data ke folder `data/` di folder tempat program dijalankan:
 | Admin | admin | admin123 |
 | Kasir | kasir | kasir123 |
 
+## Panduan Pemakaian
+
+### Admin
+
+Login `admin` / `admin123`, lalu pilih menu:
+
+| No | Menu | Yang bisa dilakukan |
+|----|------|---------------------|
+| 1 | Lihat Daftar Menu | tabel menu: kategori, keterangan (pedas / ukuran), harga, stok |
+| 2 | Tambah Menu | pilih Makanan/Minuman, isi ID (2-4 huruf/angka), nama, harga, stok |
+| 3 | Edit Menu | ubah nama, harga, stok, atau ukuran/status pedas |
+| 4 | Hapus Menu | hapus menu setelah konfirmasi; riwayat lama tetap aman |
+| 5 | Kelola Akun Kasir | lihat, tambah, hapus kasir, dan ganti password kasir |
+| 6 | Lihat Riwayat Transaksi | semua transaksi; ketik ID (misalnya `T001`) untuk melihat struknya |
+| 7 | Laporan Penjualan Harian | total hari ini, per metode bayar, per kasir, menu terlaris, stok menipis |
+
+Tips: harga boleh ditulis dengan titik ribuan (`25.000`), dan Enter kosong membatalkan edit atau hapus.
+
+### Kasir
+
+Login `kasir` / `kasir123`, lalu pilih menu:
+
+| No | Menu | Yang bisa dilakukan |
+|----|------|---------------------|
+| 1 | Lihat Daftar Menu | daftar menu beserta harga dan stok |
+| 2 | Buat Pesanan Baru | isi nomor meja, ketik ID menu dan jumlahnya, `0` untuk selesai |
+| 3 | Riwayat Transaksi Saya | transaksi milik kasir sendiri; ketik ID untuk cetak ulang struk |
+
+Alur membuat pesanan:
+
+1. Isi nomor meja (`0` untuk batal).
+2. Ketik ID menu, misalnya `M01`, lalu jumlahnya. Ketik `M` untuk melihat menu lagi.
+3. Ketik `0` jika sudah selesai. Ringkasan pesanan dan total tampil.
+4. Pilih metode bayar: `1` Tunai, `2` QRIS, `3` Debit.
+5. Untuk Tunai, isi uang yang diterima. Kembalian dan struk tampil.
+
+Contoh struk:
+
+```
+  STRUK PEMBAYARAN - KASIR RESTO
+============================================
+ID Transaksi                            T001
+ID Pesanan                              P001
+Waktu                    18-11-2026 23:53:21
+Kasir                             Kasir Satu
+Meja                                       5
+--------------------------------------------
+Nasi Goreng (Pedas)
+  2 x Rp20.000                      Rp40.000
+Jus Jeruk (Large)
+  1 x Rp14.000                      Rp14.000
+--------------------------------------------
+Subtotal                            Rp54.000
+Pajak (10%)                          Rp5.400
+TOTAL                               Rp59.400
+--------------------------------------------
+Metode Bayar                           Tunai
+============================================
+   Terima kasih atas kunjungan Anda!
+============================================
+```
+
 ## Struktur Folder
 
 ```
