@@ -70,6 +70,7 @@ public class TransaksiService {
             // 3. Pembayaran berhasil: buat transaksi, simpan, cetak struk
             if (dipilih.bayar(total)) {
                 kurangiStok(pesanan);
+                bekukanIsiPesanan(pesanan);
                 Transaksi transaksi = new Transaksi();
                 transaksi.setIdTransaksi(DataStore.kodeBerikutnya("T", false));
                 transaksi.setPesanan(pesanan);
@@ -145,6 +146,20 @@ public class TransaksiService {
         for (ItemPesanan item : pesanan.getDaftarItem()) {
             MenuItem menu = item.getMenu();
             menu.setStok(Math.max(0, menu.getStok() - item.getJumlah()));
+        }
+    }
+
+    /**
+     * Mengganti menu di setiap item pesanan dengan salinannya. Setelah ini
+     * transaksi tidak lagi terhubung ke menu asli, jadi kalau Admin
+     * mengubah nama atau harga menu, riwayat dan struk lama tetap sesuai
+     * dengan harga saat dibayar.
+     *
+     * @param pesanan pesanan yang sudah dibayar
+     */
+    private void bekukanIsiPesanan(Pesanan pesanan) {
+        for (ItemPesanan item : pesanan.getDaftarItem()) {
+            item.setMenu(item.getMenu().salin());
         }
     }
 

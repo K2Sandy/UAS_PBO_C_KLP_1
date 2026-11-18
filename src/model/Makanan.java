@@ -44,6 +44,16 @@ public class Makanan extends MenuItem {
     }
 
     /**
+     * Membuat salinan makanan ini (stok salinan 0).
+     *
+     * @return salinan makanan
+     */
+    @Override
+    public MenuItem salin() {
+        return new Makanan(getId(), getNama(), getHarga(), 0, pedas);
+    }
+
+    /**
      * Mengambil keterangan makanan: pedas atau tidak.
      *
      * @return "Pedas" atau "Tidak pedas"

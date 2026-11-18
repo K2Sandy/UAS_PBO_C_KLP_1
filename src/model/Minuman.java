@@ -52,6 +52,16 @@ public class Minuman extends MenuItem {
     }
 
     /**
+     * Membuat salinan minuman ini (stok salinan 0).
+     *
+     * @return salinan minuman
+     */
+    @Override
+    public MenuItem salin() {
+        return new Minuman(getId(), getNama(), getHarga(), 0, ukuran);
+    }
+
+    /**
      * Mengambil keterangan minuman, yaitu ukurannya.
      *
      * @return "Regular" atau "Large"

@@ -47,6 +47,16 @@ public abstract class MenuItem {
     public abstract String getKategori();
 
     /**
+     * Membuat salinan menu ini dengan id, nama, harga, dan keterangan yang
+     * sama (stok salinan 0). Dipakai untuk menyimpan isi transaksi supaya
+     * riwayat tidak ikut berubah saat Admin mengedit menu (polymorphism:
+     * Makanan menyalin sebagai Makanan, Minuman sebagai Minuman).
+     *
+     * @return objek menu baru yang terpisah dari menu aslinya
+     */
+    public abstract MenuItem salin();
+
+    /**
      * Mengambil keterangan singkat khas jenis menu untuk ditampilkan
      * di daftar menu, contoh: "Pedas" untuk makanan atau "Large" untuk
      * minuman (polymorphism).
