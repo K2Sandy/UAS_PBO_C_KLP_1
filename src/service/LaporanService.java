@@ -2,6 +2,8 @@ package service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +29,10 @@ public class LaporanService {
     /** Format tanggal di judul laporan harian. */
     private static final DateTimeFormatter FORMAT_TANGGAL =
             DateTimeFormatter.ofPattern("dd-MM-yyyy");
+
+    /** Format untuk membaca tanggal yang diketik Admin; tanggal mustahil (31-02) ditolak. */
+    private static final DateTimeFormatter BACA_TANGGAL =
+            DateTimeFormatter.ofPattern("dd-MM-uuuu").withResolverStyle(ResolverStyle.STRICT);
 
     /** Banyak menu yang ditampilkan di daftar menu terlaris. */
     private static final int JUMLAH_TERLARIS = 5;
@@ -113,23 +119,24 @@ public class LaporanService {
     }
 
     /**
-     * Menampilkan laporan penjualan untuk hari ini: jumlah transaksi,
-     * subtotal, pajak, total pendapatan, rinciannya per metode
-     * pembayaran dan per kasir, menu terlaris, dan menu yang stoknya
-     * hampir habis.
+     * Menampilkan laporan penjualan untuk satu tanggal. Admin mengetik
+     * tanggal (dd-MM-yyyy) atau menekan Enter untuk hari ini. Isinya:
+     * jumlah transaksi, subtotal, pajak, total pendapatan, rincian per
+     * metode pembayaran dan per kasir, menu terlaris, dan menu yang
+     * stoknya hampir habis.
      */
     public void laporanHarian() {
-        LocalDate hariIni = LocalDate.now();
-        List<Transaksi> hariIniSaja = new ArrayList<>();
+        LocalDate tanggal = bacaTanggal();
+        List<Transaksi> transaksiTanggal = new ArrayList<>();
         for (Transaksi t : DataStore.riwayat) {
-            if (t.getWaktu().toLocalDate().equals(hariIni)) {
-                hariIniSaja.add(t);
+            if (t.getWaktu().toLocalDate().equals(tanggal)) {
+                transaksiTanggal.add(t);
             }
         }
 
-        ConsoleHelper.cetakJudul("LAPORAN PENJUALAN " + hariIni.format(FORMAT_TANGGAL));
-        if (hariIniSaja.isEmpty()) {
-            ConsoleHelper.cetak("Belum ada transaksi hari ini.");
+        ConsoleHelper.cetakJudul("LAPORAN PENJUALAN " + tanggal.format(FORMAT_TANGGAL));
+        if (transaksiTanggal.isEmpty()) {
+            ConsoleHelper.cetak("Belum ada transaksi pada tanggal ini.");
             return;
         }
 
@@ -138,7 +145,7 @@ public class LaporanService {
         double total = 0;
         Map<String, Double> perMetode = new TreeMap<>();
         Map<String, Double> perKasir = new TreeMap<>();
-        for (Transaksi t : hariIniSaja) {
+        for (Transaksi t : transaksiTanggal) {
             subtotal += t.getSubtotal();
             pajak += t.getPajak();
             total += t.getTotal();
@@ -146,14 +153,14 @@ public class LaporanService {
             perKasir.merge(t.getNamaKasir(), t.getTotal(), Double::sum);
         }
 
-        ConsoleHelper.cetak(baris("Jumlah transaksi", String.valueOf(hariIniSaja.size())));
+        ConsoleHelper.cetak(baris("Jumlah transaksi", String.valueOf(transaksiTanggal.size())));
         ConsoleHelper.cetak(baris("Subtotal", ConsoleHelper.formatRupiah(subtotal)));
         ConsoleHelper.cetak(baris("Pajak", ConsoleHelper.formatRupiah(pajak)));
         ConsoleHelper.cetak(baris("Total pendapatan", ConsoleHelper.formatRupiah(total)));
 
         cetakRincian("Per metode pembayaran", perMetode);
         cetakRincian("Per kasir", perKasir);
-        cetakMenuTerlaris(hariIniSaja);
+        cetakMenuTerlaris(transaksiTanggal);
         cetakStokMenipis();
     }
 
@@ -211,6 +218,28 @@ public class LaporanService {
         }
         if (!ada) {
             ConsoleHelper.cetak("  Semua stok aman.");
+        }
+    }
+
+    /**
+     * Menanyakan tanggal laporan sampai formatnya benar.
+     * Enter kosong berarti hari ini; "/" boleh dipakai sebagai pemisah.
+     *
+     * @return tanggal yang dipilih Admin
+     */
+    private LocalDate bacaTanggal() {
+        while (true) {
+            String input = ConsoleHelper.bacaTeks("Tanggal laporan (dd-MM-yyyy, Enter = hari ini): ")
+                    .replace('/', '-');
+            if (input.isEmpty()) {
+                return LocalDate.now();
+            }
+            try {
+                return LocalDate.parse(input, BACA_TANGGAL);
+            } catch (DateTimeParseException e) {
+                ConsoleHelper.cetak("Tanggal tidak valid. Contoh yang benar: "
+                        + LocalDate.now().format(FORMAT_TANGGAL));
+            }
         }
     }
 

@@ -19,7 +19,7 @@ KasirResto membantu restoran mencatat pesanan dan pembayaran. Ada dua jenis akun
 | Lihat, tambah, edit (termasuk ukuran/pedas), dan hapus menu | Lihat daftar menu (harga Large sudah dihitung) |
 | Kelola akun kasir: tambah, hapus, ganti password | Buat pesanan per nomor meja; stok dicek, menu yang sama digabung |
 | Riwayat semua transaksi dan rincian struk tiap transaksi | Bayar dengan Tunai, QRIS, atau Debit |
-| Laporan harian: per metode bayar, per kasir, menu terlaris, stok menipis | Cetak struk, lihat riwayat sendiri, dan cetak ulang struk |
+| Laporan harian untuk tanggal pilihan: per metode bayar, per kasir, menu terlaris, stok menipis | Cetak struk, lihat riwayat sendiri, dan cetak ulang struk |
 
 Konsep PBO yang dipakai:
 
@@ -131,7 +131,7 @@ Login `admin` / `admin123`, lalu pilih menu:
 | 4 | Hapus Menu | hapus menu setelah konfirmasi; riwayat lama tetap aman |
 | 5 | Kelola Akun Kasir | lihat, tambah, hapus kasir, dan ganti password kasir |
 | 6 | Lihat Riwayat Transaksi | semua transaksi; ketik ID (misalnya `T001`) untuk melihat struknya |
-| 7 | Laporan Penjualan Harian | total hari ini, per metode bayar, per kasir, menu terlaris, stok menipis |
+| 7 | Laporan Penjualan Harian | pilih tanggal (Enter = hari ini): total, per metode bayar, per kasir, menu terlaris, stok menipis |
 
 Tips: harga boleh ditulis dengan titik ribuan (`25.000`), dan Enter kosong membatalkan edit atau hapus.
 
