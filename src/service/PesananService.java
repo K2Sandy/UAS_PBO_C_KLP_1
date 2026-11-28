@@ -41,6 +41,7 @@ public class PesananService {
 
         menuService.tampilkanSemuaMenu();
         while (true) {
+            ConsoleHelper.cetak("");
             String id = ConsoleHelper.bacaTeks("ID menu (0 = selesai, M = lihat menu lagi): ");
             if (id.equals("0")) {
                 break;

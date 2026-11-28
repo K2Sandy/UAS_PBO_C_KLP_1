@@ -56,6 +56,7 @@ public class Admin extends Akun {
             ConsoleHelper.cetak("6. Lihat Riwayat Transaksi");
             ConsoleHelper.cetak("7. Laporan Penjualan Harian");
             ConsoleHelper.cetak("0. Logout");
+            ConsoleHelper.cetak("");
             int pilihan = ConsoleHelper.bacaPilihan("Pilih: ", 0, 7);
 
             switch (pilihan) {

@@ -35,6 +35,7 @@ public class AkunService {
             ConsoleHelper.cetak("3. Hapus Kasir");
             ConsoleHelper.cetak("4. Ganti Password Kasir");
             ConsoleHelper.cetak("0. Kembali");
+            ConsoleHelper.cetak("");
 
             int pilihan = ConsoleHelper.bacaPilihan("Pilih: ", 0, 4);
 

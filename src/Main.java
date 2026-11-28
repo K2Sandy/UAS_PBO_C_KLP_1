@@ -38,6 +38,7 @@ public class Main {
             ConsoleHelper.cetakJudul("KASIRRESTO");
             ConsoleHelper.cetak("1. Login");
             ConsoleHelper.cetak("0. Keluar");
+            ConsoleHelper.cetak("");
             int pilihan = ConsoleHelper.bacaPilihan("Pilih: ", 0, 1);
 
             if (pilihan == 0) {

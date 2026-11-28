@@ -26,11 +26,12 @@ public class ConsoleHelper {
     }
 
     /**
-     * Mencetak judul di dalam garis pemisah.
+     * Memisahkan bagian baru dengan satu baris kosong sebelum judul.
      *
      * @param judul teks judul yang ditampilkan
      */
     public static void cetakJudul(String judul) {
+        System.out.println();
         cetakGaris();
         System.out.println("  " + judul);
         cetakGaris();
@@ -46,7 +47,7 @@ public class ConsoleHelper {
     }
 
     /**
-     * Membaca satu baris teks dari pengguna, lalu mencetak satu baris kosong.
+     * Membaca satu baris teks dari pengguna.
      * Jika input sudah habis (misalnya Ctrl+D), program berhenti dengan rapi
      * dan data tetap disimpan lewat shutdown hook yang didaftarkan di Main.
      *
@@ -56,9 +57,7 @@ public class ConsoleHelper {
     public static String bacaTeks(String prompt) {
         System.out.print(prompt);
         try {
-            String input = scanner.nextLine().trim();
-            System.out.println();
-            return input;
+            return scanner.nextLine().trim();
         } catch (NoSuchElementException e) {
             System.out.println();
             System.out.println("Input berakhir. Program ditutup.");

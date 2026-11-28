@@ -52,6 +52,7 @@ public class Kasir extends Akun {
             ConsoleHelper.cetak("2. Buat Pesanan Baru");
             ConsoleHelper.cetak("3. Riwayat Transaksi Saya");
             ConsoleHelper.cetak("0. Logout");
+            ConsoleHelper.cetak("");
             int pilihan = ConsoleHelper.bacaPilihan("Pilih: ", 0, 3);
 
             switch (pilihan) {

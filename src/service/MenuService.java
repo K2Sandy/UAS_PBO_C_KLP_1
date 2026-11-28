@@ -66,6 +66,7 @@ public class MenuService {
         ConsoleHelper.cetak("1. Makanan");
         ConsoleHelper.cetak("2. Minuman");
         ConsoleHelper.cetak("0. Batal");
+        ConsoleHelper.cetak("");
         int jenis = ConsoleHelper.bacaPilihan("Pilih jenis menu: ", 0, 2);
         if (jenis == 0) {
             ConsoleHelper.cetak("Tambah menu dibatalkan.");
@@ -194,6 +195,7 @@ public class MenuService {
         ConsoleHelper.cetak("3. Ubah stok");
         ConsoleHelper.cetak(menu instanceof Minuman ? "4. Ubah ukuran" : "4. Ubah status pedas");
         ConsoleHelper.cetak("0. Batal");
+        ConsoleHelper.cetak("");
         int pilihan = ConsoleHelper.bacaPilihan("Pilih data yang ingin diubah: ", 0, 4);
 
         switch (pilihan) {
