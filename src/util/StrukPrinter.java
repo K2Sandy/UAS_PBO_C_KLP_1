@@ -28,7 +28,6 @@ public class StrukPrinter {
     public static void cetak(Transaksi transaksi) {
         String garis = "-".repeat(ConsoleHelper.LEBAR);
 
-        System.out.println();
         ConsoleHelper.cetakJudul("STRUK PEMBAYARAN - KASIR RESTO");
         ConsoleHelper.cetak(ConsoleHelper.baris("ID Transaksi", transaksi.getIdTransaksi()));
         ConsoleHelper.cetak(ConsoleHelper.baris("ID Pesanan", transaksi.getPesanan().getIdPesanan()));

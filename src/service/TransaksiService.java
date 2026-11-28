@@ -65,12 +65,12 @@ public class TransaksiService {
         ConsoleHelper.cetak(ConsoleHelper.baris("Subtotal", ConsoleHelper.formatRupiah(subtotal)));
         ConsoleHelper.cetak(ConsoleHelper.baris(LABEL_PAJAK, ConsoleHelper.formatRupiah(pajak)));
         ConsoleHelper.cetak(ConsoleHelper.baris("TOTAL", ConsoleHelper.formatRupiah(total)));
+        ConsoleHelper.cetak("");
 
         // Pilihan metode pembayaran (polymorphism lewat interface Pembayaran)
         Pembayaran[] metode = { new Tunai(), new Qris(), new Debit() };
 
         while (true) {
-            ConsoleHelper.cetak("");
             ConsoleHelper.cetak("Pilih metode pembayaran:");
             for (int i = 0; i < metode.length; i++) {
                 ConsoleHelper.cetak((i + 1) + ". " + metode[i].getNamaMetode());
@@ -102,6 +102,7 @@ public class TransaksiService {
                 DataStore.riwayat.add(transaksi);
                 // simpan data transaksi langsung ke file transaksi
                 new FileManager().simpanSemuaData();
+                ConsoleHelper.cetak("");
                 StrukPrinter.cetak(transaksi);
                 return;
             }

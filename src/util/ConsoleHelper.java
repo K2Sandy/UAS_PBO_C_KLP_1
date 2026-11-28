@@ -46,7 +46,7 @@ public class ConsoleHelper {
     }
 
     /**
-     * Membaca satu baris teks dari pengguna.
+     * Membaca satu baris teks dari pengguna, lalu mencetak satu baris kosong.
      * Jika input sudah habis (misalnya Ctrl+D), program berhenti dengan rapi
      * dan data tetap disimpan lewat shutdown hook yang didaftarkan di Main.
      *
@@ -56,7 +56,9 @@ public class ConsoleHelper {
     public static String bacaTeks(String prompt) {
         System.out.print(prompt);
         try {
-            return scanner.nextLine().trim();
+            String input = scanner.nextLine().trim();
+            System.out.println();
+            return input;
         } catch (NoSuchElementException e) {
             System.out.println();
             System.out.println("Input berakhir. Program ditutup.");
